@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Informaçoes Iniciais"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <EditText
+            android:id="@+id/txtOdometro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:inputType="number"
+            android:maxLength="8"
+            android:hint="Quilometragem" />
+
+        <EditText
+            android:id="@+id/dataUltimaRevisao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:focusable="false"
+            android:hint="Data da Última Revisão"/>
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="10dp"
+            android:text="O que deseja monitorar? "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <CheckBox
+            android:id="@+id/chCombustivel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="2dp"
+            android:layout_marginLeft="10dp"
+            android:checked="false"
+            android:text="Consumo Combustível" />
+
+        <CheckBox
+            android:id="@+id/chOleo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:checked="false"
+            android:text="Consumo Óleo" />
+
+        <CheckBox
+            android:id="@+id/chDesgastePastilhas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:layout_marginLeft="10dp"
+            android:text="Desgaste das Pastilhas" />
+
+        <CheckBox
+            android:id="@+id/chDesgastePneus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:layout_marginLeft="10dp"
+            android:text="Desgaste dos Pneus" />
+
+        <CheckBox
+            android:id="@+id/chConsumoLiqArref"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="8dp"
+            android:checked="false"
+            android:text="Consumo Liq. Arrefecimento" />
+
+        <CheckBox
+            android:id="@+id/chDesgasteFreios"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:layout_marginLeft="10dp"
+            android:text="Desgaste dos Freios" />
+
+        <CheckBox
+            android:id="@+id/chDesgasteCxDirecao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:layout_marginLeft="10dp"
+            android:text="Desgaste Cx. Direção" />
+
+        <TextView
+            android:id="@+id/lblPosicaoCelular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="8dp"
+            android:text="Onde costuma deixar o celular enquanto pilota?"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <RadioGroup
+            android:id="@+id/radioLocalCelular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/radioBolsoCalca"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:checked="true"
+                android:text="Bolso da Calça" />
+
+            <RadioButton
+                android:id="@+id/radioSuporte"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="Suporte na Moto" />
+
+            <RadioButton
+                android:id="@+id/radioBolsoCamisa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="Bolso da Camisa" />
+
+            <RadioButton
+                android:id="@+id/radioMochila"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="Mochila" />
+        </RadioGroup>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btnSaveInfos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:background="@color/colorPrimaryDark"
+            android:padding="12dp"
+            android:text="Salvar"
+            android:textColor="@color/white" />
+    </LinearLayout>
+</ScrollView>

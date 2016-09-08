@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "670477898595",
+    "firebase_url": "https://sovrau.firebaseio.com",
+    "project_id": "firebase-sovrau",
+    "storage_bucket": "firebase-sovrau.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:670477898595:android:48e3a3631989c82f",
+        "android_client_info": {
+          "package_name": "br.com.sovrau"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "670477898595-er49m5p6rosab6d7865ddshp2310mfu9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.sovrau",
+            "certificate_hash": "96D5D44D465E862093B8DAF5F7938AA01C4CCCAB"
+          }
+        },
+        {
+          "client_id": "670477898595-pbs6efd2f0tk9bcr6pl03ma9ni8048u0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQcK9sX8AmJ2LvKAN_yiaW1ATe4KX6BbM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "670477898595-pbs6efd2f0tk9bcr6pl03ma9ni8048u0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

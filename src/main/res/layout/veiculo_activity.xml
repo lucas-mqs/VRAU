@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Veículo"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/lblVeiculo"
+        android:textColor="@color/primaryTextColor"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtNomeVeiculo"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:hint="Nome do Veículo"/>
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/spMarcaVeiculo"
+        android:layout_gravity="center_horizontal"
+        android:spinnerMode="dropdown" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/txtModelo"
+        android:hint="Modelo"/>
+    <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:orientation="horizontal">
+        <EditText
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/txtPlaca"
+            android:inputType="textNoSuggestions|textCapCharacters"
+            android:maxLength="8"
+            android:hint="Placa " />
+        <EditText
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/txtPlaca"
+            android:gravity="right"
+            android:layout_marginLeft="260dp"
+            android:inputType="number"
+            android:id="@+id/txtAno"
+            android:maxLength="4"
+            android:hint="Ano "/>
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/lblCilindradas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:text="Cilindradas da Moto: "
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <SeekBar
+        android:id="@+id/barCilindradas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="8dp" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:id="@+id/txtTanque"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:hint="Volume do Tanque(L)"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:inputType="textMultiLine|textNoSuggestions"
+            android:lines="3"
+            android:hint="Observação"
+            android:gravity="left"
+            android:maxLength="80"
+            android:id="@+id/txtObs" />
+    <android.support.v7.widget.AppCompatButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+        android:padding="12dp"
+            android:text="Cadastrar"
+            android:background="@color/colorPrimaryDark"
+            android:textColor="@color/white"
+            android:id="@+id/btnCadVeiculo"
+            android:layout_gravity="right" />
+</LinearLayout>

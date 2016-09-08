@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">VRAU</string>
+    <string name="facebook_app_id">1309644449051126</string>
+    <string name="login_via_google">LOGIN VIA GOOGLE</string>
+</resources>
