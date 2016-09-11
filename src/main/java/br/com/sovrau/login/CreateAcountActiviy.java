@@ -36,7 +36,7 @@ public class CreateAcountActiviy extends AppCompatActivity {
     private Button btnCreateAccount;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private static final String TAG = "CreateAccountActivity";
+    private static final String TAG = CreateAcountActiviy.class.getSimpleName();
     private String nomeUsuario = "";
 
     @Override
@@ -65,9 +65,9 @@ public class CreateAcountActiviy extends AppCompatActivity {
                     user.updateProfile(profileUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
-                                Log.d(TAG, "Nome do usuário incluso");
-                            }
+                        if(task.isSuccessful()){
+                            Log.d(TAG, "Nome do usuário incluso");
+                        }
                         }
                     });
                     final UsuarioDTO usuario = new UsuarioDTO();
@@ -91,14 +91,10 @@ public class CreateAcountActiviy extends AppCompatActivity {
         String senha = this.senha.getText().toString();
         String confSenha = this.confirmarSenha.getText().toString();
 
-        //TODO: Refatorar isso
         nomeUsuario = nome;
-        if(!validate(nome, email, confEmail, senha, confSenha)){
+        if(validate(nome, email, confEmail, senha, confSenha)){
             //Toast.makeText(getBaseContext(), "Preencha os campos corretamente", Toast.LENGTH_LONG).show();
-        }
-        else {
-            final ProgressDialog progressDialog = new ProgressDialog(CreateAcountActiviy.this,
-                    R.style.AppTheme);
+            final ProgressDialog progressDialog = new ProgressDialog(CreateAcountActiviy.this, R.style.AppTheme);
             progressDialog.setIndeterminate(true);
             progressDialog.setMessage("Aguarde...");
             progressDialog.show();
@@ -112,9 +108,7 @@ public class CreateAcountActiviy extends AppCompatActivity {
                             // signed in user can be handled in the listener.
                             if (!task.isSuccessful()) {
                                 Log.e(TAG, "createUserWithEmail:error: " + task.getException().getMessage());
-
-                                Toast.makeText(CreateAcountActiviy.this, "Falha na Autenticação.",
-                                        Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CreateAcountActiviy.this, "Falha na Autenticação.", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -137,8 +131,7 @@ public class CreateAcountActiviy extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(!task.isSuccessful()){
                         Log.e(TAG, "Erro ao logar", task.getException());
-                        Toast.makeText(getApplicationContext(), "Erro ao realizar o sign-in",
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Erro ao realizar o sign-in", Toast.LENGTH_SHORT).show();
                     }
                     Intent intent = new Intent(getBaseContext(), UserHome.class);
                     intent.putExtra(Constants.EXTRA_USUARIO_LOGADO, user);

@@ -5,10 +5,6 @@
     android:layout_height="match_parent">
 
     <!-- The main content view -->
-    <RelativeLayout
-        android:id="@+id/mainContent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
     <!-- The navigation drawer -->
     <RelativeLayout

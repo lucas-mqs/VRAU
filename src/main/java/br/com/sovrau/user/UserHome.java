@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -72,7 +73,8 @@ public class UserHome extends ListActivity implements AdapterView.OnItemClickLis
         helper = new DatabaseHelper(this);
 
         populateDrawerList();
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        //getActionBar().setDisplayHomeAsUpEnabled(true);
 
         TextView lblBoasVindas = (TextView) findViewById(R.id.lblBoasVindas);
         Intent intent = getIntent();
@@ -186,7 +188,7 @@ public class UserHome extends ListActivity implements AdapterView.OnItemClickLis
         mDrawerPane = (RelativeLayout) findViewById(R.id.drawerPane);
         mDrawerList = (ListView) findViewById(R.id.navList);
         DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
-        //FIXME
+
         mDrawerLayout = new DrawerLayout(getBaseContext());
         mDrawerPane = new RelativeLayout(getBaseContext());
         mDrawerList = new ListView(getBaseContext());
@@ -207,6 +209,7 @@ public class UserHome extends ListActivity implements AdapterView.OnItemClickLis
         setTitle(mNavItems.get(position).mTitle);
 
         mDrawerLayout.closeDrawer(mDrawerPane);
+        Toast.makeText(getApplicationContext(), "Opção: " + mNavItems.get(position).mTitle, Toast.LENGTH_SHORT).show();
     }
 
     //inner class menu lateral

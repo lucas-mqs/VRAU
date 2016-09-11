@@ -34,6 +34,7 @@ public class CodeUtils {
     public float convertMPStoKMH(float metersPerSecond){
         return (metersPerSecond*3600) / 1000;
     }
+
     public boolean isGPSProviderEnabled(LocationManager locationManager){
         try {
             return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);

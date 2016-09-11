@@ -18,7 +18,7 @@ public class ValidationUtils {
         return str == null || str.isEmpty();
     }
     public boolean isValidLength(String str, int length){
-        return str.length() <= length;
+        return str.length() >= length;
     }
     public boolean isEqualsAndNotNull(String a, String b){
         return !isNullOrEmpty(a) && !isNullOrEmpty(b) && a.equals(b);
