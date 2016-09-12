@@ -36,6 +36,8 @@ import br.com.sovrau.constants.Constants;
 import br.com.sovrau.dto.MotoDTO;
 import br.com.sovrau.dto.UsuarioDTO;
 import br.com.sovrau.fragments.IniciaPercursoFragment;
+import br.com.sovrau.fragments.PercursoManualFragment;
+import br.com.sovrau.fragments.RevisaoManualFragment;
 import br.com.sovrau.percurso.IniciaPercursoActivity;
 import br.com.sovrau.providers.DatabaseHelper;
 import br.com.sovrau.veiculo.VeiculoActivity;
@@ -205,11 +207,12 @@ public class UserHome extends ListActivity implements AdapterView.OnItemClickLis
             case 0: //Listar Percursos
 
             case 1: //Revisão
-
+                fragmentManager.beginTransaction().replace(R.id.main_content, new RevisaoManualFragment()).addToBackStack(null).commit();
             case 2: //Alertas
 
             case 3: //Iniciar Percurso
-                startActivity(new Intent(this, IniciaPercursoActivity.class));
+                fragmentManager.beginTransaction().replace(R.id.main_content, new IniciaPercursoFragment()).addToBackStack(null).commit();
+                //startActivity(new Intent(this, IniciaPercursoActivity.class));
             case 4: //Veiculos
                 startActivity(new Intent(this, UserHome.class));
             case 5: //Sair
