@@ -1,12 +1,10 @@
 package br.com.sovrau.user;
 
+import android.app.Fragment;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -37,6 +35,8 @@ import br.com.sovrau.R;
 import br.com.sovrau.constants.Constants;
 import br.com.sovrau.dto.MotoDTO;
 import br.com.sovrau.dto.UsuarioDTO;
+import br.com.sovrau.fragments.IniciaPercursoFragment;
+import br.com.sovrau.percurso.IniciaPercursoActivity;
 import br.com.sovrau.providers.DatabaseHelper;
 import br.com.sovrau.veiculo.VeiculoActivity;
 
@@ -67,13 +67,15 @@ public class UserHome extends ListActivity implements AdapterView.OnItemClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_home_activity);
+
+        TextView userNameMenu = (TextView) findViewById(R.id.userName);
+
         ListView listView = getListView();
 
         this.fab = (FloatingActionButton) findViewById(R.id.btnFabVeiculos);
         helper = new DatabaseHelper(this);
 
         populateDrawerList();
-
         //getActionBar().setDisplayHomeAsUpEnabled(true);
 
         TextView lblBoasVindas = (TextView) findViewById(R.id.lblBoasVindas);
@@ -81,12 +83,10 @@ public class UserHome extends ListActivity implements AdapterView.OnItemClickLis
         if(intent.hasExtra(Constants.EXTRA_USUARIO_LOGADO)){
             usuario = (UsuarioDTO) intent.getSerializableExtra(Constants.EXTRA_USUARIO_LOGADO);
             mChildRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario());
-            //TODO
-            if(usuario.getNome().contains(" ")) {
-                lblBoasVindas.setText(lblBoasVindas.getText().toString().concat(usuario.getNome().split(" ")[0]));
-            } else{
-                lblBoasVindas.setText(lblBoasVindas.getText().toString().concat(usuario.getNome()));
-            }
+            String localName = usuario.getNome().contains(" ") ? usuario.getNome().split(" ")[0] : usuario.getNome();
+
+            lblBoasVindas.setText(lblBoasVindas.getText().toString().concat(localName));
+            userNameMenu.setText(localName);
         }
         String[] de = {"nmMoto", "nmMarca", "nmModelo", "anoFab"};
         int[] para = {R.id.customNmMoto, R.id.custonNmMarca, R.id.customNmModelo, R.id.customAnoFab};
@@ -120,7 +120,7 @@ public class UserHome extends ListActivity implements AdapterView.OnItemClickLis
         motoSelecionada.setNmModelo(nmModelo);
         motoSelecionada.setAnoFabricacao(anoFab);
 
-        //startActivity(new Intent(this, VeiculoActivity.class));
+        startActivity(new Intent(this, VeiculoActivity.class));
     }
     private List<Map<String, Object>> listarVeiculos(String idUsuario){
         mChildRef.addValueEventListener(new ValueEventListener() {
@@ -174,7 +174,7 @@ public class UserHome extends ListActivity implements AdapterView.OnItemClickLis
 
     }
     private void populateDrawerList(){
-        mNavItems.add(new NavItem("Percursos", R.drawable.ic_percurso));
+        mNavItems.add(new NavItem("Listar Percursos", R.drawable.ic_percurso));
         mNavItems.add(new NavItem("Revisão", R.drawable.ic_revision));
         mNavItems.add(new NavItem("Alertas", R.drawable.ic_alerta));
         mNavItems.add(new NavItem("Iniciar Percurso", R.drawable.ic_percurso_manual));
@@ -188,11 +188,6 @@ public class UserHome extends ListActivity implements AdapterView.OnItemClickLis
         mDrawerPane = (RelativeLayout) findViewById(R.id.drawerPane);
         mDrawerList = (ListView) findViewById(R.id.navList);
         DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
-
-        mDrawerLayout = new DrawerLayout(getBaseContext());
-        mDrawerPane = new RelativeLayout(getBaseContext());
-        mDrawerList = new ListView(getBaseContext());
-
         mDrawerList.setAdapter(adapter);
 
         // Drawer Item click listeners
@@ -205,11 +200,26 @@ public class UserHome extends ListActivity implements AdapterView.OnItemClickLis
 
     }
     private void selectItemFromDrawer(int position) {
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        switch (position) {
+            case 0: //Listar Percursos
+
+            case 1: //Revisão
+
+            case 2: //Alertas
+
+            case 3: //Iniciar Percurso
+                startActivity(new Intent(this, IniciaPercursoActivity.class));
+            case 4: //Veiculos
+                startActivity(new Intent(this, UserHome.class));
+            case 5: //Sair
+
+        }
+
         mDrawerList.setItemChecked(position, true);
         setTitle(mNavItems.get(position).mTitle);
 
         mDrawerLayout.closeDrawer(mDrawerPane);
-        Toast.makeText(getApplicationContext(), "Opção: " + mNavItems.get(position).mTitle, Toast.LENGTH_SHORT).show();
     }
 
     //inner class menu lateral

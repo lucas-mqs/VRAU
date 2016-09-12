@@ -47,7 +47,7 @@ public class InfoInicialActivity extends Activity {
     private RadioGroup radioGroupLocalCelular;
     private RadioButton radioBtnLocalCelular;
     private AppCompatButton btnSaveInfos;
-    private long idMotoAdd;
+    private String idMotoAdd;
     private long valorOdometro;
     private String strDataRevisao;
     private static final int DATE_DIALOG_ID = 0;
@@ -65,12 +65,12 @@ public class InfoInicialActivity extends Activity {
 
         final Intent intent = getIntent();
         if (intent.hasExtra(Constants.EXTRA_MOTO_ADICIONADA)) {
-            idMotoAdd = intent.getLongExtra(Constants.EXTRA_MOTO_ADICIONADA, -1);
+            idMotoAdd = intent.getStringExtra(Constants.EXTRA_MOTO_ADICIONADA);
         }
         if (intent.hasExtra(Constants.EXTRA_USUARIO_LOGADO)) {
             usuario = (UsuarioDTO) intent.getSerializableExtra(Constants.EXTRA_USUARIO_LOGADO);
         }
-        mChildRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario()).child(Constants.NODE_MOTO);
+        mChildRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario()).child(Constants.NODE_MOTO).child(idMotoAdd);
 
         dataUltimaRevisao.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 
 /**
@@ -41,5 +42,9 @@ public class CodeUtils {
         }catch (Exception e){
             return false;
         }
+    }
+    public String getGenericID(String toConcat){
+        SimpleDateFormat dt = new SimpleDateFormat("yyyyMMddHHmmss");
+        return dt.format(new Date()).concat(toConcat);
     }
 }

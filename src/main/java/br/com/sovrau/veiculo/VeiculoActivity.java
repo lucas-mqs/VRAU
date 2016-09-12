@@ -30,6 +30,7 @@ import br.com.sovrau.constants.Constants;
 import br.com.sovrau.dto.MarcaDTO;
 import br.com.sovrau.dto.MotoDTO;
 import br.com.sovrau.dto.UsuarioDTO;
+import br.com.sovrau.utilities.CodeUtils;
 import br.com.sovrau.utilities.ValidationUtils;
 
 /**
@@ -92,7 +93,7 @@ public class VeiculoActivity extends Activity implements AdapterView.OnItemSelec
         barCilindradas.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                progress = ((int)Math.round(progress/step))*step;
+                progress = (Math.round(progress/step)) * step;
                 //progress = progress + step;
                 seekBar.setProgress(progress);
                 cilindradasCorrigido = progress + MINIMO_CILINDRADAS;
@@ -122,7 +123,9 @@ public class VeiculoActivity extends Activity implements AdapterView.OnItemSelec
                     Toast.makeText(getBaseContext(), "Por favor, preencha os campos corretamente", Toast.LENGTH_LONG).show();
                     return;
                 } else {
+                    String motoID = CodeUtils.getInstance().getGenericID(nmMoto);
                     Map<String, Object> mappedMoto = new HashMap();
+                    mappedMoto.put("id", motoID);
                     mappedMoto.put("marca", marcaEscolhida.getNmMarca());
                     mappedMoto.put("nome", nmMoto);
                     mappedMoto.put("cilindradas", cilindradasCorrigido);
@@ -131,9 +134,9 @@ public class VeiculoActivity extends Activity implements AdapterView.OnItemSelec
                     mappedMoto.put("placa", placa);
                     mappedMoto.put("obs", obs.length() > 100 ? obs.substring(0, 99) : obs);
                     try{
-                        mVeiculoRef.setValue(mappedMoto);
+                        mVeiculoRef.child(motoID).setValue(mappedMoto);
                         Intent intentMotoAdd = new Intent(getApplicationContext(), InfoInicialActivity.class);
-                        intentMotoAdd.putExtra(Constants.EXTRA_MOTO_ADICIONADA, 1);
+                        intentMotoAdd.putExtra(Constants.EXTRA_MOTO_ADICIONADA, motoID);
                         intentMotoAdd.putExtra(Constants.EXTRA_USUARIO_LOGADO, usuario);
                         startActivity(intentMotoAdd);
                     } catch(Exception e) {
