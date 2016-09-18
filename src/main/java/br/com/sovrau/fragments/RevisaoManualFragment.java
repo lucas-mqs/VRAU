@@ -2,7 +2,7 @@ package br.com.sovrau.fragments;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
@@ -14,7 +14,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 
 import java.util.Calendar;
-import java.util.concurrent.ExecutionException;
 
 import br.com.sovrau.R;
 
