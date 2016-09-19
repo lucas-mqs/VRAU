@@ -167,6 +167,12 @@ public class CreateAcountActiviy extends AppCompatActivity {
         }
         return isValid;
     }
+    private void saveLocalUser(usuarioDTO){
+        CodeUtils().getInstance().saveSP(this, "idUsuario", usuarioDTO.getIdUsuario());
+        CodeUtils().getInstance().saveSP(this, "email", usuarioDTO.getEmail());
+        CodeUtils().getInstance().saveSP(this, "nome", usuarioDTO.getNome());
+    }
+    
     @Override
     public void onStart() {
         super.onStart();
