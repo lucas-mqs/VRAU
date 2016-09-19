@@ -109,6 +109,12 @@ public class CreateAcountActiviy extends AppCompatActivity {
                             if (!task.isSuccessful()) {
                                 Log.e(TAG, "createUserWithEmail:error: " + task.getException().getMessage());
                                 Toast.makeText(CreateAcountActiviy.this, "Falha na Autenticação.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                final UsuarioDTO usuario = new UsuarioDTO();
+                                usuario.setIdUSuario(mAuth.getCurrentUser().getUid());
+                                usuario.setEmail(mAuth.getCurrentUser().getEmail());
+                                usuario.setNome(mAuth.getCurrentUser().getDisplayName());
+                                logar(usuario);
                             }
                         }
                     });
