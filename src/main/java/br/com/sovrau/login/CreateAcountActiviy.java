@@ -114,6 +114,7 @@ public class CreateAcountActiviy extends AppCompatActivity {
                                 usuario.setIdUSuario(mAuth.getCurrentUser().getUid());
                                 usuario.setEmail(mAuth.getCurrentUser().getEmail());
                                 usuario.setNome(mAuth.getCurrentUser().getDisplayName());
+                                saveLocalUser(usuario);
                                 logar(usuario);
                             }
                         }
