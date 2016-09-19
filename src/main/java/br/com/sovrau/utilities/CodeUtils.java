@@ -1,20 +1,20 @@
 package br.com.sovrau.utilities;
 
-import android.app.Activity;
-import android.content.pm.PackageManager;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.LocationManager;
-import android.support.v4.content.ContextCompat;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 
 /**
  * Created by Lucas on 08/05/2016.
  */
 public class CodeUtils {
+    public static String PREF = "br.com.sovrau.PREF";
+
     private static final CodeUtils INSTANCE = new CodeUtils();
 
     public static CodeUtils getInstance(){
@@ -46,5 +46,15 @@ public class CodeUtils {
     public String getGenericID(String toConcat){
         SimpleDateFormat dt = new SimpleDateFormat("yyyyMMddHHmmss");
         return dt.format(new Date()).concat(toConcat);
+    }
+    public void saveSP(Context context, String key, String value ){
+        SharedPreferences sp = context.getSharedPreferences(PREF, Context.MODE_PRIVATE);
+        sp.edit().putString(key, value).apply();
+    }
+
+    public String getSP(Context context, String key ){
+        SharedPreferences sp = context.getSharedPreferences(PREF, Context.MODE_PRIVATE);
+        String token = sp.getString(key, "");
+        return( token );
     }
 }

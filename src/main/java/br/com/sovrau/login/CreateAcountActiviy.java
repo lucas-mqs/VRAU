@@ -173,5 +173,4 @@ public class CreateAcountActiviy extends AppCompatActivity {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
-
 }

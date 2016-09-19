@@ -138,7 +138,7 @@ public class InfoInicialActivity extends Activity {
             mappedInfos.put("isMonitorarLiquido", isMonitorarLiquido);
             mappedInfos.put("isMonitorarFreios", isMonitorarFreios);
             mappedInfos.put("isMonitorarCxDirecao", isMonitorarCxDirecao);
-            mappedInfos.put("localCelular", localCelular);
+            mappedInfos.put("localCelular", radioBtnLocalCelular.getText());
             mChildRef.updateChildren(mappedInfos);
 
         }

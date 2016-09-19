@@ -4,40 +4,11 @@
             android:id="@+id/drawerLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-        <android.support.design.widget.CoordinatorLayout
+        <FrameLayout
             android:id="@+id/main_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:orientation="vertical">
+            android:layout_height="match_parent" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Bem-vindo(a), "
-                android:layout_marginStart="12dp"
-                android:layout_marginBottom="30dp"
-                android:id="@+id/lblBoasVindas" />
-            <ListView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="30dp"
-                android:id="@android:id/list">
-            </ListView>
-            <android.support.design.widget.FloatingActionButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|right"
-                android:layout_margin="16dp"
-                android:id="@+id/btnFabVeiculos"
-                android:src="@drawable/ic_add_circle_white_24dp"
-                app:layout_anchor="@android:id/list"
-                app:layout_anchorGravity="bottom|right|end"
-                app:background="@color/colorPrimary"
-                app:layout_behavior="br.com.sovrau.utilities.ScrollAwareFABBehavior"/>
-        </android.support.design.widget.CoordinatorLayout>
         <!-- The navigation drawer -->
         <RelativeLayout
             android:layout_width="280dp"
@@ -73,7 +44,6 @@
                         android:id="@+id/userName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="NOME DO USUARIO AQUI"
                         android:textColor="#fff"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -84,7 +54,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
                         android:layout_marginTop="4dp"
-                        android:text="Ver Perfil"
                         android:textColor="#fff"
                         android:textSize="12sp"/>
                 </LinearLayout>

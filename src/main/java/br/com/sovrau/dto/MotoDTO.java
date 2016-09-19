@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by Lucas on 03/05/2016.
  */
 public class MotoDTO implements Serializable{
-    private long idMoto;
+    private String idMoto;
     private long idMarca;
     private String nmMarca;
     private String idUsuario;
@@ -21,7 +21,7 @@ public class MotoDTO implements Serializable{
     public MotoDTO() {
     }
 
-    public MotoDTO(long idMoto, long idMarca, String nmMarca, String idUsuario, String nmMoto, int cilindradasMoto, String nmModelo, int tanque, int anoFabricacao, String placa, String obs) {
+    public MotoDTO(String idMoto, long idMarca, String nmMarca, String idUsuario, String nmMoto, int cilindradasMoto, String nmModelo, int tanque, int anoFabricacao, String placa, String obs) {
         this.idMoto = idMoto;
         this.idMarca = idMarca;
         this.nmMarca = nmMarca;
@@ -35,11 +35,11 @@ public class MotoDTO implements Serializable{
         this.obs = obs;
     }
 
-    public long getIdMoto() {
+    public String getIdMoto() {
         return idMoto;
     }
 
-    public void setIdMoto(long idMoto) {
+    public void setIdMoto(String idMoto) {
         this.idMoto = idMoto;
     }
 
@@ -130,11 +130,11 @@ public class MotoDTO implements Serializable{
 
         MotoDTO motoDTO = (MotoDTO) o;
 
-        if (idMoto != motoDTO.idMoto) return false;
         if (idMarca != motoDTO.idMarca) return false;
         if (cilindradasMoto != motoDTO.cilindradasMoto) return false;
         if (tanque != motoDTO.tanque) return false;
         if (anoFabricacao != motoDTO.anoFabricacao) return false;
+        if (idMoto != null ? !idMoto.equals(motoDTO.idMoto) : motoDTO.idMoto != null) return false;
         if (nmMarca != null ? !nmMarca.equals(motoDTO.nmMarca) : motoDTO.nmMarca != null)
             return false;
         if (idUsuario != null ? !idUsuario.equals(motoDTO.idUsuario) : motoDTO.idUsuario != null)
@@ -149,7 +149,7 @@ public class MotoDTO implements Serializable{
 
     @Override
     public int hashCode() {
-        int result = (int) (idMoto ^ (idMoto >>> 32));
+        int result = idMoto != null ? idMoto.hashCode() : 0;
         result = 31 * result + (int) (idMarca ^ (idMarca >>> 32));
         result = 31 * result + (nmMarca != null ? nmMarca.hashCode() : 0);
         result = 31 * result + (idUsuario != null ? idUsuario.hashCode() : 0);

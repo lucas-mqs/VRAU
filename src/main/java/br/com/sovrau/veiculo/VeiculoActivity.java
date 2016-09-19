@@ -94,7 +94,32 @@ public class VeiculoActivity extends Activity implements AdapterView.OnItemSelec
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progress = (Math.round(progress/step)) * step;
-                //progress = progress + step;
+                if(progress > 50 && progress < 100){
+                    progress = 100;
+                } else if(progress > 100 && progress < 125){
+                    progress = 125;
+                } else if(progress > 125 && progress < 150){
+                    progress = 150;
+                } else if(progress > 150 && progress < 200){
+                    progress = 200;
+                } else if (progress > 200 && progress < 250){
+                    progress = 250;
+                } else if(progress > 250 && progress < 300) {
+                    progress = 300;
+                } else if (progress > 300 && progress < 500) {
+                    progress = 500;
+                } else if (progress > 500 && progress < 600) {
+                    progress = 600;
+                } else if (progress > 600 && progress < 750) {
+                    progress = 750;
+                } else if (progress > 750 && progress < 800) {
+                    progress = 800;
+                } else if (progress > 800 && progress < 900) {
+                    progress = 900;
+                } else if (progress > 900 && progress < 1000) {
+                    progress = 1000;
+                }
+
                 seekBar.setProgress(progress);
                 cilindradasCorrigido = progress + MINIMO_CILINDRADAS;
                 lblCilindradas.setText(cilindradasPlaceHolder + cilindradasCorrigido);
@@ -127,6 +152,7 @@ public class VeiculoActivity extends Activity implements AdapterView.OnItemSelec
                     Map<String, Object> mappedMoto = new HashMap();
                     mappedMoto.put("id", motoID);
                     mappedMoto.put("marca", marcaEscolhida.getNmMarca());
+                    mappedMoto.put("modelo", nmModelo);
                     mappedMoto.put("nome", nmMoto);
                     mappedMoto.put("cilindradas", cilindradasCorrigido);
                     mappedMoto.put("tanque", tanque);

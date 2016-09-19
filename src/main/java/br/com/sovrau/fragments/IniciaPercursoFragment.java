@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,16 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import br.com.sovrau.R;
+import br.com.sovrau.constants.Constants;
+import br.com.sovrau.dto.MotoDTO;
+import br.com.sovrau.dto.UsuarioDTO;
 import br.com.sovrau.utilities.CodeUtils;
 import br.com.sovrau.utilities.ValidationUtils;
 
@@ -31,13 +41,15 @@ public class IniciaPercursoFragment extends Fragment {
     private EditText txtInicioPercurso;
     private EditText txtFinalPercurso;
     private EditText txtOdometroInicial;
-    private EditText txtOdometroFinal;
     private EditText txtObs;
-    private CheckBox isMedirAuto;
     private CheckBox isDetectarFim;
     private AppCompatButton btnIniciaPercurso;
 
     private LocationManager locManager;
+    private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference mPercursoRef;
+    private MotoDTO motoDTO;
+    private UsuarioDTO usuario;
 
     public static IniciaPercursoFragment newInstance() {
         return new IniciaPercursoFragment();
@@ -52,6 +64,11 @@ public class IniciaPercursoFragment extends Fragment {
         initComponents(view);
         //Após iniciar a interface verificamos se o serviço de localização está ativo
         locManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        Intent intent = getActivity().getIntent();
+        motoDTO = (MotoDTO) intent.getSerializableExtra(Constants.EXTRA_MOTO_ADICIONADA);
+        usuario = (UsuarioDTO) intent.getSerializableExtra(Constants.EXTRA_USUARIO_LOGADO);
+        mPercursoRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario()).child(Constants.NODE_MOTO).child(motoDTO.getIdMoto()).child(Constants.NODE_PERCURSO);
+
         btnIniciaPercurso.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -66,9 +83,7 @@ public class IniciaPercursoFragment extends Fragment {
         this.txtInicioPercurso = (EditText) view.findViewById(R.id.txtInicio);
         this.txtFinalPercurso = (EditText) view.findViewById(R.id.txtFinal);
         this.txtOdometroInicial = (EditText) view.findViewById(R.id.txtOdometroInicial);
-        this.txtOdometroFinal = (EditText) view.findViewById(R.id.txtOdometroFinal);
         this.txtObs = (EditText) view.findViewById(R.id.txtMotivo);
-        this.isMedirAuto = (CheckBox) view.findViewById(R.id.chMedicaoAut);
         this.isDetectarFim = (CheckBox) view.findViewById(R.id.chDetectFimPercurso);
         this.btnIniciaPercurso = (AppCompatButton) view.findViewById(R.id.btnIniciar);
     }
@@ -112,9 +127,7 @@ public class IniciaPercursoFragment extends Fragment {
         String txtInicioPercurso = this.txtInicioPercurso.getText().toString();
         String txtFinalPercurso = this.txtFinalPercurso.getText().toString();
         String txtOdometroInicial = this.txtOdometroInicial.getText().toString();
-        String txtOdometroFinal = this.txtOdometroFinal.getText().toString();
         String txtMotivo = this.txtObs.getText().toString();
-        boolean isMedirAuto = this.isMedirAuto.isChecked();
         boolean isDetectarFimPercurso = this.isDetectarFim.isChecked();
         int localCelular = this.rdTipoPercurso.getCheckedRadioButtonId();
         this.tipoPercurso = (RadioButton) view.findViewById(localCelular);
@@ -123,7 +136,24 @@ public class IniciaPercursoFragment extends Fragment {
             Toast.makeText(getActivity().getApplicationContext(), "Por favor, preencha os campos corretamente", Toast.LENGTH_LONG).show();
             return;
         } else{
+            String percursoID = CodeUtils.getInstance().getGenericID("Percurso");
+            Map<String, Object> mappedPercurso = new HashMap<>();
+            mappedPercurso.put("id", percursoID);
+            mappedPercurso.put("inicio", txtInicioPercurso);
+            mappedPercurso.put("final", txtFinalPercurso);
+            mappedPercurso.put("odometroInicial", txtOdometroInicial);
+            mappedPercurso.put("motivo", txtMotivo);
+            mappedPercurso.put("isMedirAuto", true);
+            mappedPercurso.put("isDetectarFimPercurso", isDetectarFimPercurso);
+            mappedPercurso.put("tipoPercurso", tipoPercurso.getText());
+            mappedPercurso.put("moto", motoDTO.getIdMoto());
 
+            try{
+                mPercursoRef.child(percursoID).setValue(mappedPercurso);
+            }catch (Exception e){
+                Log.e("ERR_INSERT_PERCURSO", "Erro ao inserir percurso: " + e.getMessage());
+                Toast.makeText(getContext(), "Erro ao inserir percurso:\nPor favor, tente novamente", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

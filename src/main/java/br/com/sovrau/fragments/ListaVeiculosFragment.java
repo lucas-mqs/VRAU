@@ -62,7 +62,7 @@ public class ListaVeiculosFragment extends ListFragment implements AdapterView.O
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.user_home_activity, container, false);
+        final View view = inflater.inflate(R.layout.lista_veiculos_fragment, container, false);
 
         this.fab = (FloatingActionButton) view.findViewById(R.id.btnFabVeiculos);
         this.lblBoasVindas = (TextView) view.findViewById(R.id.lblBoasVindas);
@@ -75,7 +75,7 @@ public class ListaVeiculosFragment extends ListFragment implements AdapterView.O
 
             lblBoasVindas.setText(lblBoasVindas.getText().toString().concat(localName));
         }
-        String[] de = {"nmMoto", "nmMarca", "nmModelo", "anoFab"};
+        String[] de = {"nome", "marca", "modelo", "ano"};
         int[] para = {R.id.customNmMoto, R.id.custonNmMarca, R.id.customNmModelo, R.id.customAnoFab};
         setListAdapter(new SimpleAdapter(getContext(), listarVeiculos(usuario.getIdUSuario()), R.layout.custom_list_motos, de, para));
         fab.setOnClickListener(new View.OnClickListener() {
@@ -92,11 +92,11 @@ public class ListaVeiculosFragment extends ListFragment implements AdapterView.O
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Map<String, Object> map = motos.get(position);
-        Long idMoto = (Long) map.get("idMoto");
-        String nmMoto = (String) map.get("nmMoto");
-        String nmMarca = (String) map.get("nmMarca");
-        String nmModelo = (String) map.get("nmModelo");
-        int anoFab = (int) map.get("anoFab");
+        String idMoto = (String) map.get("id");
+        String nmMoto = (String) map.get("nome");
+        String nmMarca = (String) map.get("marca");
+        String nmModelo = (String) map.get("modelo");
+        int anoFab = (int) map.get("ano");
 
         String mensagem = "Moto selecionada: "+ idMoto + " - " + nmMoto;
         Toast.makeText(getContext(), mensagem, Toast.LENGTH_SHORT).show();
@@ -116,19 +116,10 @@ public class ListaVeiculosFragment extends ListFragment implements AdapterView.O
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.e("Count " ,"" + dataSnapshot.getChildrenCount());
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    Map<String, Object> mapMotos;
-                    mapMotos = (Map<String, Object>) postSnapshot.getValue();
-                    /*
-                    MotoDTO moto = postSnapshot.getValue(MotoDTO.class);
-                    mapMotos.put("nmMoto", moto.getNmMoto());
-                    mapMotos.put("nmMarca", moto.getNmMarca());
-                    mapMotos.put("nmModelo", moto.getNmModelo());
-                    mapMotos.put("anoFab", String.valueOf(moto.getAnoFabricacao()));
-                    */
+                    Map<String, Object> mapMotos = (Map<String, Object>) postSnapshot.getValue();
                     motos.add(mapMotos);
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e(TAG, "Erro: " + databaseError.getCode() + " " + databaseError.getMessage());

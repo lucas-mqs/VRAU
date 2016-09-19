@@ -32,6 +32,14 @@ public class RevisaoManualFragment extends Fragment {
     private static final int DATE_DIALOG_ID = 0;
     private static final String TAG = RevisaoManualFragment.class.getSimpleName();
 
+    public static RevisaoManualFragment newInstance() {
+        Bundle args = new Bundle();
+
+        RevisaoManualFragment fragment = new RevisaoManualFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public RevisaoManualFragment(){
 
     }

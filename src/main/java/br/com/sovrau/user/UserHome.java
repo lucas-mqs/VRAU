@@ -1,8 +1,10 @@
 package br.com.sovrau.user;
 
-import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -19,7 +22,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import br.com.sovrau.R;
+import br.com.sovrau.constants.Constants;
+import br.com.sovrau.dto.UsuarioDTO;
 import br.com.sovrau.fragments.IniciaPercursoFragment;
+import br.com.sovrau.fragments.ListaAlertaFragment;
+import br.com.sovrau.fragments.ListaPercursoFragment;
 import br.com.sovrau.fragments.ListaVeiculosFragment;
 import br.com.sovrau.fragments.RevisaoManualFragment;
 
@@ -33,16 +40,24 @@ public class UserHome extends AppCompatActivity {
     ListView mDrawerList;
     RelativeLayout mDrawerPane;
 
+    private TextView lblUserName;
+    private UsuarioDTO usuario;
     private DrawerLayout mDrawerLayout;
-    ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
+    ArrayList<NavItem> mNavItems = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_home_activity);
 
+        lblUserName = (TextView) findViewById(R.id.userName);
+        Intent intent = getIntent();
+        usuario = (UsuarioDTO) intent.getSerializableExtra(Constants.EXTRA_USUARIO_LOGADO);
+        String localName = usuario.getNome().contains(" ") ? usuario.getNome().split(" ")[0] : usuario.getNome();
+
+        lblUserName.setText(localName);
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().add(R.id.root_layout, ListaVeiculosFragment.newInstance(), "listaVeiculos").commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.main_content, ListaVeiculosFragment.newInstance(), "listaVeiculos").commit();
         }
         populateDrawerList();
         //getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -71,20 +86,19 @@ public class UserHome extends AppCompatActivity {
                 selectItemFromDrawer(position);
             }
         });
-
     }
     private void selectItemFromDrawer(int position) {
         Fragment fragment = null;
-        Class fragmentClass = null;
+        Class fragmentClass;
         switch (position) {
             case 0: //Listar Percursos
-                fragmentClass = RevisaoManualFragment.class;
+                fragmentClass = ListaPercursoFragment.class;
                 break;
             case 1: //Revisão
                 fragmentClass = RevisaoManualFragment.class;
                 break;
             case 2: //Alertas
-                fragmentClass = RevisaoManualFragment.class;
+                fragmentClass = ListaAlertaFragment.class;
                 break;
             case 3: //Iniciar Percurso
                 fragmentClass = IniciaPercursoFragment.class;
@@ -105,7 +119,7 @@ public class UserHome extends AppCompatActivity {
             } catch (Exception e){
                 Log.e(TAG, e.getMessage());
             }
-        android.app.FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.main_content, fragment).addToBackStack(null).commit();
 
         mDrawerList.setItemChecked(position, true);
