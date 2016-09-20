@@ -29,6 +29,7 @@ import br.com.sovrau.R;
 import br.com.sovrau.constants.Constants;
 import br.com.sovrau.dto.MotoDTO;
 import br.com.sovrau.dto.UsuarioDTO;
+import br.com.sovrau.percurso.MonitorAvisoActivity;
 import br.com.sovrau.utilities.CodeUtils;
 import br.com.sovrau.utilities.ValidationUtils;
 
@@ -72,8 +73,10 @@ public class IniciaPercursoFragment extends Fragment {
         btnIniciaPercurso.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-                handleGPS(locManager);
-                insertData(view);
+                if(v.findViewById(R.id.chMedicaoAut).isSelected())
+                    handleGPS(locManager);
+                insertData(v);
+                startActivity(new Intent(getContext(), MonitorAvisoActivity.class));
             }
         });
         return view;
