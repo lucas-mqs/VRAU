@@ -118,6 +118,20 @@ public class VeiculoActivity extends Activity implements AdapterView.OnItemSelec
                     progress = 900;
                 } else if (progress > 900 && progress < 1000) {
                     progress = 1000;
+                } else if (progress > 1000 && progress < 1100){
+                    progress = 1100;
+                } else if (progress > 1100 && progress < 1200){
+                    progress = 1200;
+                } else if (progress > 1200 && progress < 1250){
+                    progress = 1250;
+                } else if (progress > 1250 && progress < 1300){
+                    progress = 1300;
+                } else if (progress > 1300 && progress < 1400){
+                    progress = 1400;
+                } else if (progress > 1400 && progress < 1500){
+                    progress = 1500;
+                } else if (progress > 1500 && progress < 1600){
+                    progress = 1600;
                 }
 
                 seekBar.setProgress(progress);

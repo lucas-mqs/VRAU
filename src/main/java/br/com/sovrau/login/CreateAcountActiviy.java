@@ -22,6 +22,7 @@ import br.com.sovrau.R;
 import br.com.sovrau.constants.Constants;
 import br.com.sovrau.dto.UsuarioDTO;
 import br.com.sovrau.user.UserHome;
+import br.com.sovrau.utilities.CodeUtils;
 import br.com.sovrau.utilities.ValidationUtils;
 
 /**
@@ -168,10 +169,10 @@ public class CreateAcountActiviy extends AppCompatActivity {
         }
         return isValid;
     }
-    private void saveLocalUser(usuarioDTO){
-        CodeUtils().getInstance().saveSP(this, "idUsuario", usuarioDTO.getIdUsuario());
-        CodeUtils().getInstance().saveSP(this, "email", usuarioDTO.getEmail());
-        CodeUtils().getInstance().saveSP(this, "nome", usuarioDTO.getNome());
+    private void saveLocalUser(UsuarioDTO usuarioDTO){
+        CodeUtils.getInstance().saveSP(this, "idUsuario", usuarioDTO.getIdUSuario());
+        CodeUtils.getInstance().saveSP(this, "email", usuarioDTO.getEmail());
+        CodeUtils.getInstance().saveSP(this, "nome", usuarioDTO.getNome());
     }
     
     @Override
