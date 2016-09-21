@@ -60,7 +60,6 @@ public class IniciaPercursoActivity extends Activity{
         this.txtOdometroInicial = (EditText) findViewById(R.id.txtOdometroInicial);
         this.txtOdometroFinal = (EditText) findViewById(R.id.txtOdometroFinal);
         this.txtObs = (EditText) findViewById(R.id.txtMotivo);
-        this.isMedirAuto = (CheckBox) findViewById(R.id.chMedicaoAut);
         this.isDetectarFim = (CheckBox) findViewById(R.id.chDetectFimPercurso);
         this.btnIniciaPercurso = (AppCompatButton) findViewById(R.id.btnIniciar);
     }

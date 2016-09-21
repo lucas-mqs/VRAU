@@ -73,8 +73,7 @@ public class IniciaPercursoFragment extends Fragment {
         btnIniciaPercurso.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-                if(v.findViewById(R.id.chMedicaoAut).isSelected())
-                    handleGPS(locManager);
+                handleGPS(locManager);
                 insertData(v);
                 startActivity(new Intent(getContext(), MonitorAvisoActivity.class));
             }
