@@ -12,6 +12,7 @@ public class Constants {
     public static final String EXTRA_MOTO_EDITAR = "vrau.EDITAR_MOTO";
     public static final String EXTRA_MOTO_ADICIONADA = "vrau.MOTO_ADICIONADA";
     public static final String EXTRA_USUARIO_LOGADO = "vrau.USUARIO_LOGADO";
+    public static final String EXTRA_PERCURSO_ADICIONADO = "vrau.PERCURSO_ADICIONADO";
     public static final String NODE_ALERTA = "alerta";
 
 }

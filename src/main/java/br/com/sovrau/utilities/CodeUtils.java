@@ -7,6 +7,7 @@ import android.location.LocationManager;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -32,7 +33,7 @@ public class CodeUtils {
             return sdf.parse(str);
     }
     //Converte a velocidade de metros/segundo para quilometros/hora
-    public float convertMPStoKMH(float metersPerSecond){
+    public double convertMPStoKMH(double metersPerSecond){
         return (metersPerSecond*3600) / 1000;
     }
 
@@ -56,5 +57,23 @@ public class CodeUtils {
         SharedPreferences sp = context.getSharedPreferences(PREF, Context.MODE_PRIVATE);
         String token = sp.getString(key, "");
         return( token );
+    }
+    public double getDistance(double lat1, double lon1, double lat2, double lon2) {
+        double latA = Math.toRadians(lat1);
+        double lonA = Math.toRadians(lon1);
+        double latB = Math.toRadians(lat2);
+        double lonB = Math.toRadians(lon2);
+        double cosAng = (Math.cos(latA) * Math.cos(latB) * Math.cos(lonB-lonA)) +
+                (Math.sin(latA) * Math.sin(latB));
+        double ang = Math.acos(cosAng);
+        double dist = ang *6371;
+        return dist;
+    }
+    public String getTimeFormatted(long millis){
+        return String.format("%02d min, %02d sec",
+                TimeUnit.MILLISECONDS.toMinutes(millis),
+                TimeUnit.MILLISECONDS.toSeconds(millis) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
+        );
     }
 }
