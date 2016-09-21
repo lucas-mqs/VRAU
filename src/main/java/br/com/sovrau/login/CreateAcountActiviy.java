@@ -134,6 +134,7 @@ public class CreateAcountActiviy extends AppCompatActivity {
             this.confirmarSenha.getText().clear();
             this.nome.requestFocus();
         } else{
+            Toast.makeText(this, user.toString(), Toast.LENGTH_LONG).show();
             mAuth.signInWithEmailAndPassword(user.getEmail(), user.getSenha()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
