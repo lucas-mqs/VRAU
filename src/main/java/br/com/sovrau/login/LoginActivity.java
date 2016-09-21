@@ -42,6 +42,12 @@ public class LoginActivity extends AppCompatActivity {
         this.btnAcessar = (Button) findViewById(R.id.btnAcessar);
         this.btnCriarC = (Button) findViewById(R.id.btnCriarContaLogin);
         mAuth = FirebaseAuth.getInstance();
+		
+		FirebaseUser user = firebaseAuth.getCurrentUser();
+		if(user != null){
+			Intent intentLogado = generateIntent(user);
+            startActivity(intentLogado);
+		}
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -49,13 +55,6 @@ public class LoginActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                    UsuarioDTO usuarioLogado = new UsuarioDTO();
-                    usuarioLogado.setIdUSuario(user.getUid());
-                    usuarioLogado.setNome(user.getDisplayName());
-                    usuarioLogado.setEmail(user.getEmail());
-                    Intent intentLogado = new Intent(getApplicationContext(), UserHome.class);
-                    intentLogado.putExtra(Constants.EXTRA_USUARIO_LOGADO, usuarioLogado);
-                    startActivity(intentLogado);
                 } else {
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
@@ -69,7 +68,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
     public void doLogin(View v) {
         String login = this.txtLogin.getText().toString().toLowerCase();
         String senha = this.txtSenha.getText().toString();
@@ -92,12 +90,12 @@ public class LoginActivity extends AppCompatActivity {
                                 Log.w(TAG, "signInWithEmail", task.getException());
                                 Toast.makeText(LoginActivity.this, "Usuário/Senha inválidos",
                                         Toast.LENGTH_SHORT).show();
-                            }
-
-                            // ...
+                            } else {
+								startActivity(generateIntent(mAuth.getCurrentUser()), UserHome.class);
+							}
+							progressDialog.dismiss();
                         }
                     });
-            progressDialog.dismiss();
         }
 
     }
@@ -141,4 +139,13 @@ public class LoginActivity extends AppCompatActivity {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
+	private Intent generateIntent(FirebaseUser user){
+		UsuarioDTO usuarioLogado = new UsuarioDTO();
+        usuarioLogado.setIdUSuario(user.getUid());
+        usuarioLogado.setNome(user.getDisplayName());
+        usuarioLogado.setEmail(user.getEmail());
+        Intent intentLogado = new Intent(getApplicationContext(), UserHome.class);
+        intentLogado.putExtra(Constants.EXTRA_USUARIO_LOGADO, usuarioLogado);
+		return intentLogado;
+	}
 }
