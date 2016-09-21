@@ -22,7 +22,6 @@ import br.com.sovrau.R;
 import br.com.sovrau.constants.Constants;
 import br.com.sovrau.dto.UsuarioDTO;
 import br.com.sovrau.user.UserHome;
-import br.com.sovrau.utilities.CodeUtils;
 import br.com.sovrau.utilities.ValidationUtils;
 
 /**
@@ -36,7 +35,6 @@ public class CreateAcountActiviy extends AppCompatActivity {
     private EditText confirmarSenha;
     private Button btnCreateAccount;
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
     private static final String TAG = CreateAcountActiviy.class.getSimpleName();
     private String nomeUsuario = "";
 
@@ -52,38 +50,6 @@ public class CreateAcountActiviy extends AppCompatActivity {
         this.senha = (EditText) findViewById(R.id.txtDigiteSenha);
         this.confirmarSenha = (EditText) findViewById(R.id.txtConfSenha);
         this.btnCreateAccount = (Button) findViewById(R.id.btnSubmitCriarConta);
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    //Usuario Logado
-                    Log.i(TAG, "Usuário Logado: " + user.getUid());
-                    //Após criarmos o usuário apenas o login e senha estão disponiveis
-                    //Então, iremos atualizar para incluir o nome
-                    UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder().setDisplayName(nomeUsuario).build();
-                    user.updateProfile(profileUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful()){
-                            Log.d(TAG, "Nome do usuário incluso");
-                        }
-                        }
-                    });
-                    final UsuarioDTO usuario = new UsuarioDTO();
-                    usuario.setIdUSuario(mAuth.getCurrentUser().getUid());
-                    usuario.setEmail(mAuth.getCurrentUser().getEmail());
-                    usuario.setNome(mAuth.getCurrentUser().getDisplayName());
-                    logar(usuario);
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "Usuário Deslogado");
-                }
-            }
-        };
     }
     public void criarConta(View v) {
         String email = this.email.getText().toString();
@@ -93,8 +59,7 @@ public class CreateAcountActiviy extends AppCompatActivity {
         String confSenha = this.confirmarSenha.getText().toString();
 
         nomeUsuario = nome;
-        if(validate(nome, email, confEmail, senha, confSenha)){
-            //Toast.makeText(getBaseContext(), "Preencha os campos corretamente", Toast.LENGTH_LONG).show();
+        if(validate(nome, email, confEmail, senha, confSenha)){           
             final ProgressDialog progressDialog = new ProgressDialog(CreateAcountActiviy.this, R.style.AppTheme);
             progressDialog.setIndeterminate(true);
             progressDialog.setMessage("Aguarde...");
@@ -104,50 +69,36 @@ public class CreateAcountActiviy extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
-                            // If sign in fails, display a message to the user. If sign in succeeds
-                            // the auth state listener will be notified and logic to handle the
-                            // signed in user can be handled in the listener.
+                            progressDialog.dismiss();
                             if (!task.isSuccessful()) {
                                 Log.e(TAG, "createUserWithEmail:error: " + task.getException().getMessage());
                                 Toast.makeText(CreateAcountActiviy.this, "Falha na Autenticação.", Toast.LENGTH_SHORT).show();
                             } else {
-                                final UsuarioDTO usuario = new UsuarioDTO();
+								//Usuario Logado
+								Log.i(TAG, "Usuário Logado: " + user.getUid());
+								//Após criarmos o usuário apenas o login e senha estão disponiveis
+								//Então, iremos atualizar para incluir o nome
+								UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder().setDisplayName(nomeUsuario).build();
+								mAuth.getCurrentUser().updateProfile(profileUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+								@Override
+								public void onComplete(@NonNull Task<Void> task) {
+									if(task.isSuccessful()){
+										Log.d(TAG, "Nome do usuário incluso");
+									}
+								}
+								});
+								final UsuarioDTO usuario = new UsuarioDTO();
                                 usuario.setIdUSuario(mAuth.getCurrentUser().getUid());
                                 usuario.setEmail(mAuth.getCurrentUser().getEmail());
                                 usuario.setNome(mAuth.getCurrentUser().getDisplayName());
-                                saveLocalUser(usuario);
-                                logar(usuario);
+								saveLocalUser(usuario);
+								
+                                Intent intent = new Intent(getBaseContext(), UserHome.class);
+								intent.putExtra(Constants.EXTRA_USUARIO_LOGADO, user);
+								startActivity(intent);
                             }
                         }
                     });
-            progressDialog.dismiss();
-        }
-    }
-    public void logar(final UsuarioDTO user) {
-        if (user == null) {
-            Toast.makeText(this, "Erro ao criar conta", Toast.LENGTH_SHORT).show();
-            Toast.makeText(this, "Por favor, preencha seu cadastro novamente", Toast.LENGTH_SHORT).show();
-            this.nome.getText().clear();
-            this.email.getText().clear();
-            this.confirmarEmail.getText().clear();
-            this.senha.getText().clear();
-            this.confirmarSenha.getText().clear();
-            this.nome.requestFocus();
-        } else{
-            Toast.makeText(this, user.toString(), Toast.LENGTH_LONG).show();
-            mAuth.signInWithEmailAndPassword(user.getEmail(), user.getSenha()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(!task.isSuccessful()){
-                        Log.e(TAG, "Erro ao logar", task.getException());
-                        Toast.makeText(getApplicationContext(), "Erro ao realizar o sign-in", Toast.LENGTH_SHORT).show();
-                    }
-                    Intent intent = new Intent(getBaseContext(), UserHome.class);
-                    intent.putExtra(Constants.EXTRA_USUARIO_LOGADO, user);
-                    startActivity(intent);
-                }
-            });
-
         }
     }
     public boolean validate(String nome, String email, String confEmail, String senha, String confSenha){
@@ -170,22 +121,9 @@ public class CreateAcountActiviy extends AppCompatActivity {
         }
         return isValid;
     }
-    private void saveLocalUser(UsuarioDTO usuarioDTO){
-        CodeUtils.getInstance().saveSP(this, "idUsuario", usuarioDTO.getIdUSuario());
-        CodeUtils.getInstance().saveSP(this, "email", usuarioDTO.getEmail());
-        CodeUtils.getInstance().saveSP(this, "nome", usuarioDTO.getNome());
-    }
-    
-    @Override
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
+    private void saveLocalUser(usuarioDTO){
+        CodeUtils().getInstance().saveSP(this, "idUsuario", usuarioDTO.getIdUsuario());
+        CodeUtils().getInstance().saveSP(this, "email", usuarioDTO.getEmail());
+        CodeUtils().getInstance().saveSP(this, "nome", usuarioDTO.getNome());
     }
 }
