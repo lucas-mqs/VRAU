@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         this.btnCriarC = (Button) findViewById(R.id.btnCriarContaLogin);
         mAuth = FirebaseAuth.getInstance();
 		
-		FirebaseUser user = firebaseAuth.getCurrentUser();
+		FirebaseUser user = mAuth.getCurrentUser();
 		if(user != null){
 			Intent intentLogado = generateIntent(user);
             startActivity(intentLogado);
@@ -91,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(LoginActivity.this, "Usuário/Senha inválidos",
                                         Toast.LENGTH_SHORT).show();
                             } else {
-								startActivity(generateIntent(mAuth.getCurrentUser()), UserHome.class);
+								startActivity(generateIntent(mAuth.getCurrentUser()));
 							}
 							progressDialog.dismiss();
                         }

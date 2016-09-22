@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -60,7 +59,6 @@ public class UserHome extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().add(R.id.main_content, ListaVeiculosFragment.newInstance(), "listaVeiculos").commit();
         }
         populateDrawerList();
-        //getActionBar().setDisplayHomeAsUpEnabled(true);
     }
     private void populateDrawerList(){
         mNavItems.add(new NavItem("Listar Percursos", R.drawable.ic_percurso));

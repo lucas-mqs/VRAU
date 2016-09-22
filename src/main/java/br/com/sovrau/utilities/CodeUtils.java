@@ -46,13 +46,12 @@ public class CodeUtils {
     }
     public String getGenericID(String toConcat){
         SimpleDateFormat dt = new SimpleDateFormat("yyyyMMddHHmmss");
-        return dt.format(new Date()).concat(toConcat);
+        return dt.format(new Date()).concat(toConcat.replace(" ", ""));
     }
     public void saveSP(Context context, String key, String value ){
         SharedPreferences sp = context.getSharedPreferences(PREF, Context.MODE_PRIVATE);
         sp.edit().putString(key, value).apply();
     }
-
     public String getSP(Context context, String key ){
         SharedPreferences sp = context.getSharedPreferences(PREF, Context.MODE_PRIVATE);
         String token = sp.getString(key, "");

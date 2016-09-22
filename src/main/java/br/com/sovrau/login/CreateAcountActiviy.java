@@ -15,13 +15,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 import br.com.sovrau.R;
 import br.com.sovrau.constants.Constants;
 import br.com.sovrau.dto.UsuarioDTO;
 import br.com.sovrau.user.UserHome;
+import br.com.sovrau.utilities.CodeUtils;
 import br.com.sovrau.utilities.ValidationUtils;
 
 /**
@@ -75,7 +75,7 @@ public class CreateAcountActiviy extends AppCompatActivity {
                                 Toast.makeText(CreateAcountActiviy.this, "Falha na Autenticação.", Toast.LENGTH_SHORT).show();
                             } else {
 								//Usuario Logado
-								Log.i(TAG, "Usuário Logado: " + user.getUid());
+								Log.i(TAG, "Usuário Logado: " + mAuth.getCurrentUser().getUid());
 								//Após criarmos o usuário apenas o login e senha estão disponiveis
 								//Então, iremos atualizar para incluir o nome
 								UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder().setDisplayName(nomeUsuario).build();
@@ -84,18 +84,22 @@ public class CreateAcountActiviy extends AppCompatActivity {
 								public void onComplete(@NonNull Task<Void> task) {
 									if(task.isSuccessful()){
 										Log.d(TAG, "Nome do usuário incluso");
-									}
+                                        final UsuarioDTO usuario = new UsuarioDTO();
+                                        usuario.setIdUSuario(mAuth.getCurrentUser().getUid());
+                                        usuario.setEmail(mAuth.getCurrentUser().getEmail());
+                                        usuario.setNome(mAuth.getCurrentUser().getDisplayName());
+                                        saveLocalUser(usuario);
+
+                                        Intent intent = new Intent(getApplicationContext(), UserHome.class);
+                                        intent.putExtra(Constants.EXTRA_USUARIO_LOGADO, usuario);
+                                        startActivity(intent);
+									} else {
+                                        Log.e(TAG, "Erro ao incluir nome: " + task.getException());
+                                        Toast.makeText(getApplicationContext(), "Erro ao atualizar Usuário", Toast.LENGTH_SHORT);
+                                    }
 								}
 								});
-								final UsuarioDTO usuario = new UsuarioDTO();
-                                usuario.setIdUSuario(mAuth.getCurrentUser().getUid());
-                                usuario.setEmail(mAuth.getCurrentUser().getEmail());
-                                usuario.setNome(mAuth.getCurrentUser().getDisplayName());
-								saveLocalUser(usuario);
-								
-                                Intent intent = new Intent(getBaseContext(), UserHome.class);
-								intent.putExtra(Constants.EXTRA_USUARIO_LOGADO, user);
-								startActivity(intent);
+
                             }
                         }
                     });
@@ -121,9 +125,9 @@ public class CreateAcountActiviy extends AppCompatActivity {
         }
         return isValid;
     }
-    private void saveLocalUser(usuarioDTO){
-        CodeUtils().getInstance().saveSP(this, "idUsuario", usuarioDTO.getIdUsuario());
-        CodeUtils().getInstance().saveSP(this, "email", usuarioDTO.getEmail());
-        CodeUtils().getInstance().saveSP(this, "nome", usuarioDTO.getNome());
+    private void saveLocalUser(UsuarioDTO usuarioDTO){
+        CodeUtils.getInstance().saveSP(this, "idUsuario", usuarioDTO.getIdUSuario());
+        CodeUtils.getInstance().saveSP(this, "email", usuarioDTO.getEmail());
+        CodeUtils.getInstance().saveSP(this, "nome", usuarioDTO.getNome());
     }
 }

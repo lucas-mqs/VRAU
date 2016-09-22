@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.google.firebase.database.DataSnapshot;
@@ -37,7 +38,7 @@ public class ListaAlertaFragment extends ListFragment implements AdapterView.OnI
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     private DatabaseReference mChildRef;
     private UsuarioDTO usuario;
-    private MotoDTO motoDTO;
+    //private MotoDTO motoDTO;
     private FloatingActionButton btnFabAlertas;
 
     public ListaAlertaFragment() {
@@ -59,8 +60,8 @@ public class ListaAlertaFragment extends ListFragment implements AdapterView.OnI
 
         Intent intent = getActivity().getIntent();
         usuario = (UsuarioDTO) intent.getSerializableExtra(Constants.EXTRA_USUARIO_LOGADO);
-        motoDTO = (MotoDTO) intent.getSerializableExtra(Constants.EXTRA_MOTO_ADICIONADA);
-        mChildRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario()).child(Constants.NODE_MOTO).child(motoDTO.getIdMoto()).child(Constants.NODE_ALERTA);
+        //motoDTO = (MotoDTO) intent.getSerializableExtra(Constants.EXTRA_MOTO_ADICIONADA);
+        mChildRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario()).child(Constants.NODE_MOTO); //.child(motoDTO.getIdMoto()).child(Constants.NODE_ALERTA);
 
         String[] de = {};
         int para[] = {};
@@ -73,6 +74,11 @@ public class ListaAlertaFragment extends ListFragment implements AdapterView.OnI
             }
         });
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        ListView listView = getListView();
     }
 
     @Override

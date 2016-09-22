@@ -85,16 +85,17 @@ public class VeiculoActivity extends Activity implements AdapterView.OnItemSelec
             txtObs.setText(motoEditar.getObs());
 
             barCilindradas.setProgress(motoEditar.getCilindradasMoto());
-            barCilindradas.incrementProgressBy(step);
-            barCilindradas.setMax(MAXIMO_CILINDRADAS);
         }
+        barCilindradas.incrementProgressBy(step);
+        barCilindradas.setMax(MAXIMO_CILINDRADAS);
         mVeiculoRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario()).child(Constants.NODE_MOTO);
 
         barCilindradas.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                progress = (Math.round(progress/step)) * step;
-                if(progress > 50 && progress < 100){
+                if(progress > 0 && progress < 50){
+                    progress = 50;
+                } else if(progress > 50 && progress < 100){
                     progress = 100;
                 } else if(progress > 100 && progress < 125){
                     progress = 125;
@@ -133,9 +134,8 @@ public class VeiculoActivity extends Activity implements AdapterView.OnItemSelec
                 } else if (progress > 1500 && progress < 1600){
                     progress = 1600;
                 }
-
                 seekBar.setProgress(progress);
-                cilindradasCorrigido = progress + MINIMO_CILINDRADAS;
+                cilindradasCorrigido = progress;
                 lblCilindradas.setText(cilindradasPlaceHolder + cilindradasCorrigido);
             }
 
