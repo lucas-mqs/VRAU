@@ -12,10 +12,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
 
 import br.com.sovrau.R;
+import br.com.sovrau.utilities.ValidationUtils;
 
 /**
  * Created by Lucas on 11/09/2016.
@@ -27,10 +33,12 @@ public class RevisaoManualFragment extends Fragment {
     private EditText txtValor;
     private EditText txtLocal;
     private EditText txtObs;
+    private Spinner spMotoRevisada;
     private AppCompatButton btnSalvar;
     private String strDataRevisao;
     private static final int DATE_DIALOG_ID = 0;
     private static final String TAG = RevisaoManualFragment.class.getSimpleName();
+    private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
     public static RevisaoManualFragment newInstance() {
         Bundle args = new Bundle();
@@ -69,6 +77,7 @@ public class RevisaoManualFragment extends Fragment {
         return view;
     }
     private void initComponents(View view){
+        this.spMotoRevisada = (Spinner) view.findViewById(R.id.spListaMotosPercurso);
         this.dtRevisao = (EditText) view.findViewById(R.id.dtRevisao);
         this.txtOdometro = (EditText) view.findViewById(R.id.txtOdometro);
         this.txtTipoServico = (EditText) view.findViewById(R.id.txtTipoServico);
@@ -79,7 +88,19 @@ public class RevisaoManualFragment extends Fragment {
 
     }
     private void insertData(View view){
+        String dtRevisao = this.dtRevisao.getText().toString();
+        String quilometragem = this.txtOdometro.getText().toString();
+        String tipoServico = this.txtTipoServico.getText().toString();
+        String local = this.txtLocal.getText().toString();
+        String valor = this.txtValor.getText().toString();
+        //FIXME
+        String moto = this.spMotoRevisada.getSelectedItem().toString();
 
+        if(!validate(moto, dtRevisao, quilometragem, tipoServico, local, valor)){
+            Toast.makeText(getContext(), "Por favor, preencha os campos corretamente", Toast.LENGTH_SHORT).show();
+        } else {
+
+        }
     }
 
     protected Dialog onCreateDialog(int id) {
@@ -104,4 +125,31 @@ public class RevisaoManualFragment extends Fragment {
             dtRevisao.setText(strDataRevisao);
         }
     };
+    private boolean validate(String moto ,String dataRevisao, String quilometragem, String tipoServico, String local, String valor){
+        boolean isValid = true;
+        if(ValidationUtils.getInstance().isNullOrEmpty(moto)) {
+            isValid = false;
+        }
+        if(ValidationUtils.getInstance().isNullOrEmpty(dataRevisao)){
+            this.dtRevisao.setError("Por favor, selecione uma data");
+            isValid = false;
+        }
+        if(ValidationUtils.getInstance().isNullOrEmpty(quilometragem)){
+            this.txtOdometro.setError("Por favor, informe a quilometragem no momento da revisão");
+            isValid = false;
+        }
+        if(ValidationUtils.getInstance().isNullOrEmpty(tipoServico)) {
+            this.txtTipoServico.setError("Por favor, informe o serviço realizado");
+            isValid = false;
+        }
+        if(ValidationUtils.getInstance().isNullOrEmpty(local)) {
+            this.txtLocal.setError("Por favor, informe o local onde a revisão foi realizada");
+            isValid = false;
+        }
+        if(ValidationUtils.getInstance().isNullOrEmpty(valor)) {
+            this.txtValor.setError("Por favor, informe o valor da revisão");
+            isValid = false;
+        }
+        return isValid;
+    }
 }

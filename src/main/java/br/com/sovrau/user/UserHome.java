@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import br.com.sovrau.R;
 import br.com.sovrau.constants.Constants;
 import br.com.sovrau.dto.UsuarioDTO;
+import br.com.sovrau.fragments.AgendarRevisaoFragment;
 import br.com.sovrau.fragments.IniciaPercursoFragment;
 import br.com.sovrau.fragments.ListaAlertaFragment;
 import br.com.sovrau.fragments.ListaPercursoFragment;
@@ -62,7 +63,8 @@ public class UserHome extends AppCompatActivity {
     }
     private void populateDrawerList(){
         mNavItems.add(new NavItem("Listar Percursos", R.drawable.ic_percurso));
-        mNavItems.add(new NavItem("Revisão", R.drawable.ic_revision));
+        mNavItems.add(new NavItem("Revisão Feita", R.drawable.ic_revision));
+        mNavItems.add(new NavItem("Agendar Revisão", R.drawable.ic_calendar));
         mNavItems.add(new NavItem("Alertas", R.drawable.ic_alerta));
         mNavItems.add(new NavItem("Iniciar Percurso", R.drawable.ic_percurso_manual));
         mNavItems.add(new NavItem("Veículos", R.drawable.ic_veiculos));
@@ -88,24 +90,28 @@ public class UserHome extends AppCompatActivity {
     private void selectItemFromDrawer(int position) {
         Fragment fragment = null;
         Class fragmentClass;
+        Bundle args = new Bundle();
+        args.putSerializable(Constants.EXTRA_USUARIO_LOGADO, usuario);
         switch (position) {
             case 0: //Listar Percursos
                 fragmentClass = ListaPercursoFragment.class;
                 break;
-            case 1: //Revisão
+            case 1: //Revisão Feita
                 fragmentClass = RevisaoManualFragment.class;
                 break;
-            case 2: //Alertas
+            case 2: //Agendar Revisão
+                fragmentClass = AgendarRevisaoFragment.class;
+                break;
+            case 3: //Alertas
                 fragmentClass = ListaAlertaFragment.class;
                 break;
-            case 3: //Iniciar Percurso
+            case 4: //Iniciar Percurso
                 fragmentClass = IniciaPercursoFragment.class;
                 break;
-            case 4: //Veiculos
+            case 5: //Veiculos
                 fragmentClass = ListaVeiculosFragment.class;
-                //startActivity(new Intent(this, UserHome.class).putExtra(Constants.EXTRA_USUARIO_LOGADO, this.usuario));
                 break;
-            case 5: //Sair
+            case 6: //Sair
                 fragmentClass = RevisaoManualFragment.class;
                 break;
             default:

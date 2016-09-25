@@ -96,10 +96,8 @@ public class ListaAlertaFragment extends ListFragment implements AdapterView.OnI
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
-
         return this.alertas;
     }
 }

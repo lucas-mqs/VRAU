@@ -41,14 +41,12 @@ public class ListaPercursoFragment extends ListFragment implements AdapterView.O
 
     public static ListaPercursoFragment newInstance() {
         Bundle args = new Bundle();
-
         ListaPercursoFragment fragment = new ListaPercursoFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-    public ListaPercursoFragment() {
-    }
+    public ListaPercursoFragment() {}
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -85,7 +83,6 @@ public class ListaPercursoFragment extends ListFragment implements AdapterView.O
                     mChildRef.child(id).child(Constants.NODE_PERCURSO);
                     count ++;
                     mChildRef.getParent().getParent();
-
                 }
             }
             @Override

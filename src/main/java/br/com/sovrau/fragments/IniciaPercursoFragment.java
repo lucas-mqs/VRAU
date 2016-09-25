@@ -13,16 +13,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import br.com.sovrau.R;
@@ -36,7 +45,7 @@ import br.com.sovrau.utilities.ValidationUtils;
 /**
  * Created by Lucas on 11/09/2016.
  */
-public class IniciaPercursoFragment extends Fragment {
+public class IniciaPercursoFragment extends Fragment implements AdapterView.OnItemSelectedListener {
     private RadioGroup rdTipoPercurso;
     private RadioButton tipoPercurso;
     private EditText txtInicioPercurso;
@@ -44,13 +53,15 @@ public class IniciaPercursoFragment extends Fragment {
     private EditText txtOdometroInicial;
     private EditText txtObs;
     private CheckBox isDetectarFim;
+    private Spinner spMotosPercurso;
     private AppCompatButton btnIniciaPercurso;
 
     private LocationManager locManager;
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     private DatabaseReference mPercursoRef;
-    private MotoDTO motoDTO;
     private UsuarioDTO usuario;
+    private List<MotoDTO> listMotos = new ArrayList<>();
+    private MotoDTO motoEscolhida = new MotoDTO();
 
     public static IniciaPercursoFragment newInstance() {
         return new IniciaPercursoFragment();
@@ -62,13 +73,19 @@ public class IniciaPercursoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.inicia_percurso_activity, container, false);
+
         initComponents(view);
         //Após iniciar a interface verificamos se o serviço de localização está ativo
         locManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         Intent intent = getActivity().getIntent();
-        motoDTO = (MotoDTO) intent.getSerializableExtra(Constants.EXTRA_MOTO_ADICIONADA);
-        usuario = (UsuarioDTO) intent.getSerializableExtra(Constants.EXTRA_USUARIO_LOGADO);
-        mPercursoRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario()).child(Constants.NODE_MOTO).child(motoDTO.getIdMoto()).child(Constants.NODE_PERCURSO);
+        if(intent.getSerializableExtra(Constants.EXTRA_USUARIO_LOGADO) != null){
+            usuario = (UsuarioDTO) intent.getSerializableExtra(Constants.EXTRA_USUARIO_LOGADO);
+        } else if (getArguments() != null){
+            if(getArguments().getSerializable(Constants.EXTRA_USUARIO_LOGADO) != null)
+                usuario = (UsuarioDTO) getArguments().getSerializable(Constants.EXTRA_USUARIO_LOGADO);
+        }
+        spMotosPercurso.setOnItemSelectedListener(this);
+        populateSpinner();
 
         btnIniciaPercurso.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,6 +105,7 @@ public class IniciaPercursoFragment extends Fragment {
         this.txtObs = (EditText) view.findViewById(R.id.txtMotivo);
         this.isDetectarFim = (CheckBox) view.findViewById(R.id.chDetectFimPercurso);
         this.btnIniciaPercurso = (AppCompatButton) view.findViewById(R.id.btnIniciar);
+        this.spMotosPercurso = (Spinner) view.findViewById(R.id.spListaMotosPercurso);
     }
     private void handleGPS(LocationManager locManager){
         if(!CodeUtils.getInstance().isGPSProviderEnabled(locManager)){
@@ -148,7 +166,9 @@ public class IniciaPercursoFragment extends Fragment {
             mappedPercurso.put("isMedirAuto", true);
             mappedPercurso.put("isDetectarFimPercurso", isDetectarFimPercurso);
             mappedPercurso.put("tipoPercurso", tipoPercurso.getText());
-            mappedPercurso.put("moto", motoDTO.getIdMoto());
+            mappedPercurso.put("moto", motoEscolhida.getIdMoto());
+
+            mPercursoRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario()).child(Constants.NODE_MOTO).child(Constants.NODE_PERCURSO);
 
             try{
                 mPercursoRef.child(percursoID).setValue(mappedPercurso);
@@ -157,5 +177,51 @@ public class IniciaPercursoFragment extends Fragment {
                 Toast.makeText(getContext(), "Erro ao inserir percurso:\nPor favor, tente novamente", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String escolha = (String) parent.getItemAtPosition(position);
+        for (int i = 0; i < listMotos.size(); i++){
+            if(this.listMotos.get(i).getNmMoto().equals(escolha)){
+                this.motoEscolhida = this.listMotos.get(i);
+            }
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+    private void populateSpinner(){
+        listMotos();
+        List<String> motoID = new ArrayList<>();
+        for (MotoDTO motoDTO: listMotos) {
+            motoID.add(motoDTO.getNmMoto());
+        }
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, motoID);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        this.spMotosPercurso.setAdapter(dataAdapter);
+
+    }
+    private void listMotos(){
+        mRootRef.child(usuario.getIdUSuario()).child(Constants.NODE_MOTO).addValueEventListener(
+            new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    GenericTypeIndicator<List<MotoDTO>> genericList = new GenericTypeIndicator<List<MotoDTO>>() {
+                        @Override
+                        protected Object clone() throws CloneNotSupportedException {
+                            return super.clone();
+                        }
+                    };
+                    listMotos = dataSnapshot.getValue(genericList);
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            }
+        );
     }
 }

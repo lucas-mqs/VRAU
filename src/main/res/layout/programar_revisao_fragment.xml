@@ -11,7 +11,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Informe qual veiculo foi revisado"
+        android:text="Informe qual veiculo deseja revisar"
         android:id="@+id/lblMotoParaRevisao" />
 
     <Spinner
@@ -29,7 +29,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:focusable="false"
-        android:hint="Data da Última Revisão"
+        android:hint="Data para a revisão"
         android:id="@+id/dtRevisao"
         android:layout_gravity="center_horizontal" />
 
