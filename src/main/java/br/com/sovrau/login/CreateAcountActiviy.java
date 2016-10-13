@@ -50,6 +50,13 @@ public class CreateAcountActiviy extends AppCompatActivity {
         this.senha = (EditText) findViewById(R.id.txtDigiteSenha);
         this.confirmarSenha = (EditText) findViewById(R.id.txtConfSenha);
         this.btnCreateAccount = (Button) findViewById(R.id.btnSubmitCriarConta);
+
+        btnCreateAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                criarConta(v);
+            }
+        });
     }
     public void criarConta(View v) {
         String email = this.email.getText().toString();

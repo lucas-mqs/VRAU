@@ -67,6 +67,12 @@ public class LoginActivity extends AppCompatActivity {
                 doLogin(v);
             }
         });
+        btnCriarC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doSignup(v);
+            }
+        });
     }
     public void doLogin(View v) {
         String login = this.txtLogin.getText().toString().toLowerCase();

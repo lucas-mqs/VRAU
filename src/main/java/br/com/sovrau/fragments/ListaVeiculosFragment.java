@@ -1,6 +1,5 @@
 package br.com.sovrau.fragments;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,7 +23,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +36,7 @@ import br.com.sovrau.veiculo.VeiculoActivity;
 /**
  * Created by Lucas on 13/09/2016.
  */
-public class ListaVeiculosFragment extends ListFragment implements AdapterView.OnItemClickListener {
+public class ListaVeiculosFragment extends Fragment implements AdapterView.OnItemClickListener {
     private final static String TAG = ListaVeiculosFragment.class.getSimpleName();
 
     private UsuarioDTO usuario;
@@ -51,6 +49,7 @@ public class ListaVeiculosFragment extends ListFragment implements AdapterView.O
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     private DatabaseReference mChildRef;
     private List<Map<String, Object>> motos = new ArrayList<>();
+    private View rootView = null;
 
     public static ListaVeiculosFragment newInstance(){
         return new ListaVeiculosFragment();
@@ -62,10 +61,9 @@ public class ListaVeiculosFragment extends ListFragment implements AdapterView.O
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.lista_veiculos_fragment, container, false);
-
-        this.fab = (FloatingActionButton) view.findViewById(R.id.btnFabVeiculos);
-        this.lblBoasVindas = (TextView) view.findViewById(R.id.lblBoasVindas);
+       rootView = inflater.inflate(R.layout.lista_veiculos_fragment, container, false);
+       this.fab = (FloatingActionButton) rootView.findViewById(R.id.btnFabVeiculos);
+       this.lblBoasVindas = (TextView) rootView.findViewById(R.id.lblBoasVindas);
 
         Intent intent = getActivity().getIntent();
         if(intent.hasExtra(Constants.EXTRA_USUARIO_LOGADO)){
@@ -75,9 +73,7 @@ public class ListaVeiculosFragment extends ListFragment implements AdapterView.O
 
             lblBoasVindas.setText(lblBoasVindas.getText().toString().concat(localName));
         }
-        String[] de = {"nome", "marca", "modelo", "ano"};
-        int[] para = {R.id.customNmMoto, R.id.custonNmMarca, R.id.customNmModelo, R.id.customAnoFab};
-        setListAdapter(new SimpleAdapter(getContext(), listarVeiculos(usuario.getIdUSuario()), R.layout.custom_list_motos, de, para));
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,7 +82,23 @@ public class ListaVeiculosFragment extends ListFragment implements AdapterView.O
                 startActivity(intentCadMoto);
             }
         });
-        return view;
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        this.listMoto = (ListView) rootView.findViewById(android.R.id.list);
+
+        //listMoto = getListView();
+        String[] de = {"nome", "marca", "modelo", "ano"};
+        int[] para = {R.id.customNmMoto, R.id.custonNmMarca, R.id.customNmModelo, R.id.customAnoFab};
+        SimpleAdapter listAdapter = new SimpleAdapter(getContext(), listarVeiculos(), R.layout.custom_list_motos, de, para);
+        listAdapter.notifyDataSetChanged();
+        listMoto.setAdapter(listAdapter);
+        listMoto.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        //setListAdapter(new SimpleAdapter(getContext(), listarVeiculos(), R.layout.custom_list_motos, de, para));
     }
 
     @Override
@@ -110,13 +122,14 @@ public class ListaVeiculosFragment extends ListFragment implements AdapterView.O
 
         startActivity(new Intent(getContext(), VeiculoActivity.class));
     }
-    private List<Map<String, Object>> listarVeiculos(String idUsuario){
+    private List<Map<String, Object>> listarVeiculos(){
         mChildRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.e("Count " ,"" + dataSnapshot.getChildrenCount());
+                Log.e(TAG, "DataSnap Size " + dataSnapshot.getChildrenCount());
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     Map<String, Object> mapMotos = (Map<String, Object>) postSnapshot.getValue();
+                    Log.i(TAG, "Data: " + postSnapshot.getValue());
                     motos.add(mapMotos);
                 }
             }

@@ -61,6 +61,5 @@
         android:background="@color/colorPrimaryDark"
         android:textColor="@color/white"
         android:id="@+id/btnCriarContaLogin"
-        android:clickable="true"
-        android:onClick="doSignup"/>
+        android:clickable="true"/>
 </LinearLayout>
