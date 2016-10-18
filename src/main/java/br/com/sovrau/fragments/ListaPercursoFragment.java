@@ -77,6 +77,7 @@ public class ListaPercursoFragment extends ListFragment implements AdapterView.O
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()){
+                    //FIXME
                     Map<String, Object> mapMotos = (Map<String, Object>) postSnapshot.getValue();
                     motos.add(mapMotos);
                     String id = motos.get(count).get("id").toString();

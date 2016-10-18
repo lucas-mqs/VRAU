@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,43 +63,35 @@ public class ListaVeiculosFragment extends Fragment implements AdapterView.OnIte
        rootView = inflater.inflate(R.layout.lista_veiculos_fragment, container, false);
        this.fab = (FloatingActionButton) rootView.findViewById(R.id.btnFabVeiculos);
        this.lblBoasVindas = (TextView) rootView.findViewById(R.id.lblBoasVindas);
+       this.listMoto = (ListView) rootView.findViewById(android.R.id.list);
 
         Intent intent = getActivity().getIntent();
         if(intent.hasExtra(Constants.EXTRA_USUARIO_LOGADO)){
             usuario = (UsuarioDTO) intent.getSerializableExtra(Constants.EXTRA_USUARIO_LOGADO);
             mChildRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario());
             String localName = usuario.getNome().contains(" ") ? usuario.getNome().split(" ")[0] : usuario.getNome();
-
             lblBoasVindas.setText(lblBoasVindas.getText().toString().concat(localName));
         }
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentCadMoto = new Intent(getActivity().getApplicationContext(), VeiculoActivity.class);
-                intentCadMoto.putExtra(Constants.EXTRA_USUARIO_LOGADO, usuario);
-                startActivity(intentCadMoto);
-            }
-        });
-        return rootView;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        this.listMoto = (ListView) rootView.findViewById(android.R.id.list);
-
         //listMoto = getListView();
-        String[] de = {"nome", "marca", "modelo", "ano"};
-        int[] para = {R.id.customNmMoto, R.id.custonNmMarca, R.id.customNmModelo, R.id.customAnoFab};
-        SimpleAdapter listAdapter = new SimpleAdapter(getContext(), listarVeiculos(), R.layout.custom_list_motos, de, para);
-        listAdapter.notifyDataSetChanged();
-        listMoto.setAdapter(listAdapter);
-        listMoto.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        //setListAdapter(new SimpleAdapter(getContext(), listarVeiculos(), R.layout.custom_list_motos, de, para));
-    }
+       String[] de = {"nome", "marca", "modelo", "ano"};
+       int[] para = {R.id.customNmMoto, R.id.custonNmMarca, R.id.customNmModelo, R.id.customAnoFab};
+       SimpleAdapter listAdapter = new SimpleAdapter(getActivity(), listarVeiculos(), R.layout.custom_list_motos, de, para);
+       listAdapter.notifyDataSetChanged();
+       listMoto.setAdapter(listAdapter);
+       listMoto.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+       //setListAdapter(new SimpleAdapter(getContext(), listarVeiculos(), R.layout.custom_list_motos, de, para));
 
+       fab.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               Intent intentCadMoto = new Intent(getActivity().getApplicationContext(), VeiculoActivity.class);
+               intentCadMoto.putExtra(Constants.EXTRA_USUARIO_LOGADO, usuario);
+               startActivity(intentCadMoto);
+           }
+       });
+       return rootView;
+    }
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Map<String, Object> map = motos.get(position);
