@@ -176,8 +176,9 @@ public class InfoInicialActivity extends Activity {
 
         switch (id) {
             case DATE_DIALOG_ID:
-                return new DatePickerDialog(this, mDateSetListener, ano, mes,
-                        dia);
+                DatePickerDialog dataSelector = new DatePickerDialog(this, mDateSetListener, ano, mes, dia);
+                dataSelector.getDatePicker().setMaxDate(new Date().getTime());
+                return dataSelector;
         }
         return null;
     }

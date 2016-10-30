@@ -2,7 +2,6 @@ package br.com.sovrau.percurso;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
@@ -24,14 +23,15 @@ public class MonitorAvisoActivity extends AppCompatActivity implements OnMapRead
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.monitor_aviso_activity);
+        SupportMapFragment mapFragment =  new SupportMapFragment();
         if(savedInstanceState == null){
-            SupportMapFragment fragment = new SupportMapFragment();
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.map, fragment);
+            fragmentTransaction.replace(R.id.map, mapFragment);
             fragmentTransaction.commit();
+            mapFragment.getMapAsync(this);
         }
         else {
-            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+            mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
             mapFragment.getMapAsync(this);
         }
 

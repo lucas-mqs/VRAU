@@ -6,7 +6,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Veículo"
+        android:text="Cadastre sua Moto"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:id="@+id/lblVeiculo"
@@ -19,6 +19,16 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:hint="Nome do Veículo"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Qual a marca da moto?"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:id="@+id/lblMarca"
+        android:textColor="@color/primaryTextColor" />
 
     <Spinner
         android:layout_width="match_parent"
@@ -73,8 +83,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginTop="8dp" />
         <EditText
             android:layout_width="match_parent"

@@ -8,18 +8,26 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Configuração de Alertas"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:id="@+id/textView9" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:paddingTop="30dp"
         android:text="Selecione um item que gostaria de ser notificado sobre o desgaste"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:id="@+id/textView10" />
 
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:id="@+id/spItens"
         android:layout_gravity="center_horizontal"
         android:spinnerMode="dropdown" />
@@ -28,21 +36,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:paddingTop="20dp"
         android:text="Enviar notificação quando o desgaste estiver em: "
-        android:id="@+id/textView11" />
+        android:id="@+id/txtPercentual" />
 
     <SeekBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/skDesgaste"
-        android:max="100"
-        android:progress="0"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:indeterminate="false" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="40dp"
         android:text="Salvar"
-        android:id="@+id/btnSalvar"
+        android:id="@+id/btnSalvarAlerta"
         android:layout_gravity="center_horizontal" />
 </LinearLayout>

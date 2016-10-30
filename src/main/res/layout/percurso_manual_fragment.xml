@@ -14,8 +14,16 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Inserir Percurso"
+            android:text="Atualizar Quilometragem"
             android:id="@+id/textView2" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/spListaMotosPercurso"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center_horizontal" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -95,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/txtOdometroInicial"
                 android:layout_gravity="center_horizontal"
-                android:hint="Odomêtro Inicial"/>
+                android:hint="Quilometragem Inicial"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -109,7 +117,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/txtOdometroFinal"
-                android:hint="Odomêtro Final"/>
+                android:hint="Quilometragem Final"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout

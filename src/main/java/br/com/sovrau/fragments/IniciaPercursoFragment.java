@@ -45,6 +45,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,7 +96,7 @@ public class IniciaPercursoFragment extends Fragment implements AdapterView.OnIt
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.inicia_percurso_activity, container, false);
+        View view = inflater.inflate(R.layout.inicia_percurso_activity, container, false);
 
         initComponents(view);
         //Após iniciar a interface verificamos se o serviço de localização está ativo
@@ -237,7 +238,7 @@ public class IniciaPercursoFragment extends Fragment implements AdapterView.OnIt
 
     }
     private void listMotos(){
-        mRootRef.child(usuario.getIdUSuario()).child(Constants.NODE_MOTO).addValueEventListener(
+        mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario()).child(Constants.NODE_MOTO).addValueEventListener(
             new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {

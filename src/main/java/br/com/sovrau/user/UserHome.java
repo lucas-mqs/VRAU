@@ -28,6 +28,7 @@ import br.com.sovrau.fragments.IniciaPercursoFragment;
 import br.com.sovrau.fragments.ListaAlertaFragment;
 import br.com.sovrau.fragments.ListaPercursoFragment;
 import br.com.sovrau.fragments.ListaVeiculosFragment;
+import br.com.sovrau.fragments.PercursoManualFragment;
 import br.com.sovrau.fragments.RevisaoManualFragment;
 
 /**
@@ -66,7 +67,8 @@ public class UserHome extends AppCompatActivity {
         mNavItems.add(new NavItem("Revisão Feita", R.drawable.ic_revision));
         mNavItems.add(new NavItem("Agendar Revisão", R.drawable.ic_calendar));
         mNavItems.add(new NavItem("Alertas", R.drawable.ic_alerta));
-        mNavItems.add(new NavItem("Iniciar Percurso", R.drawable.ic_percurso_manual));
+        mNavItems.add(new NavItem("Iniciar Percurso", R.drawable.ic_percurso));
+        mNavItems.add(new NavItem("Percurso Manual", R.drawable.ic_percurso_manual));
         mNavItems.add(new NavItem("Veículos", R.drawable.ic_veiculos));
         mNavItems.add(new NavItem("Sair", R.drawable.ic_sair));
 
@@ -108,10 +110,13 @@ public class UserHome extends AppCompatActivity {
             case 4: //Iniciar Percurso
                 fragmentClass = IniciaPercursoFragment.class;
                 break;
-            case 5: //Veiculos
+            case 5: //Percurso Manual
+                fragmentClass = PercursoManualFragment.class;
+                break;
+            case 6: //Veiculos
                 fragmentClass = ListaVeiculosFragment.class;
                 break;
-            case 6: //Sair
+            case 7: //Sair
                 fragmentClass = RevisaoManualFragment.class;
                 break;
             default:

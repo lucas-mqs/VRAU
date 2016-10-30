@@ -50,7 +50,7 @@ public class GPSLocationService extends Service {
     private Location locationInicial;
     private Location locationFinal;
 
-    private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();;
     private DatabaseReference mPercursoRef;
 
     private UsuarioDTO usuario;
