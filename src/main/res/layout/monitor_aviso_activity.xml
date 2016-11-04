@@ -40,5 +40,5 @@
         android:padding="12dp"
         android:text="VRAU!!!"
         android:textColor="@color/white"
-        android:id="@+id/button" />
+        android:id="@+id/btnVrau" />
 </LinearLayout>

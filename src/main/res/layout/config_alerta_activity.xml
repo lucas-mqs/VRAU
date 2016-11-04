@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:paddingTop="30dp"
+        android:paddingTop="40dp"
         android:text="Selecione um item que gostaria de ser notificado sobre o desgaste"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
@@ -25,7 +25,7 @@
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="30dp"
+        android:paddingTop="40dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:id="@+id/spItens"
@@ -38,7 +38,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:paddingTop="20dp"
+        android:paddingTop="40dp"
         android:text="Enviar notificação quando o desgaste estiver em: "
         android:id="@+id/txtPercentual" />
 
@@ -48,15 +48,18 @@
         android:id="@+id/skDesgaste"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
         android:indeterminate="false" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="40dp"
         android:text="Salvar"
         android:id="@+id/btnSalvarAlerta"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:background="@color/colorPrimaryDark"
+        android:textColor="@color/white"/>
 </LinearLayout>

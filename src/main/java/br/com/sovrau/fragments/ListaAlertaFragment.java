@@ -76,7 +76,9 @@ public class ListaAlertaFragment extends Fragment implements AdapterView.OnItemC
         btnFabAlertas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(), ConfigAlertaActivity.class));
+                Intent intent = new Intent(getContext(), ConfigAlertaActivity.class);
+                intent.putExtra(Constants.EXTRA_USUARIO_LOGADO, usuario);
+                startActivity(intent);
             }
         });
         return view;

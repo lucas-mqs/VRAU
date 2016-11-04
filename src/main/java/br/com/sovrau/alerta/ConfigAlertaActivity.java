@@ -46,11 +46,13 @@ public class ConfigAlertaActivity extends Activity {
     private UsuarioDTO usuarioDTO = new UsuarioDTO();
     private String itemAlerta;
     private int percentualAlerta = 0;
+    private String percentualPalceHolder;
     private static final String TAG = ConfigAlertaActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.config_alerta_activity);
         initComponents();
         Intent intent = getIntent();
         usuarioDTO = (UsuarioDTO) intent.getSerializableExtra(Constants.EXTRA_USUARIO_LOGADO);
@@ -72,7 +74,7 @@ public class ConfigAlertaActivity extends Activity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 skPercentual.setProgress(i);
-                txtPercentual.getText().toString().concat(""+i);
+                txtPercentual.setText(percentualPalceHolder + ""+i);
                 percentualAlerta = i;
             }
 
@@ -116,6 +118,7 @@ public class ConfigAlertaActivity extends Activity {
         this.skPercentual.incrementProgressBy(1);
         this.skPercentual.setProgress(0);
         this.skPercentual.setMax(100);
+        this.percentualPalceHolder = this.txtPercentual.getText().toString();
         this.btnSalvarAlerta = (Button) findViewById(R.id.btnSalvarAlerta);
     }
     private void populateSpinner(){
@@ -128,6 +131,7 @@ public class ConfigAlertaActivity extends Activity {
         listItens.add("Freios");
         Collections.sort(listItens);
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listItens);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         this.spItens.setPrompt("Itens");
         this.spItens.setAdapter(dataAdapter);
     }

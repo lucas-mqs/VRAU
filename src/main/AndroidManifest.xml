@@ -23,6 +23,7 @@
         <activity android:name="br.com.sovrau.veiculo.VeiculoActivity" android:screenOrientation="portrait"/>
         <activity android:name="br.com.sovrau.veiculo.InfoInicialActivity" android:screenOrientation="portrait"/>
         <activity android:name=".percurso.MonitorAvisoActivity" android:screenOrientation="portrait"/>
+        <activity android:name="br.com.sovrau.alerta.ConfigAlertaActivity" android:screenOrientation="portrait"/>
         <activity android:name="com.facebook.FacebookActivity"
             android:configChanges=
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"

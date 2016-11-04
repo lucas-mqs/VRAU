@@ -25,13 +25,10 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.gms.location.places.AutocompletePrediction;
-import com.google.android.gms.location.places.internal.AutocompletePredictionEntity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
@@ -45,7 +42,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,7 +97,7 @@ public class IniciaPercursoFragment extends Fragment implements AdapterView.OnIt
         initComponents(view);
         //Após iniciar a interface verificamos se o serviço de localização está ativo
         locManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        Intent intent = getActivity().getIntent();
+        final Intent intent = getActivity().getIntent();
         if(intent.getSerializableExtra(Constants.EXTRA_USUARIO_LOGADO) != null){
             usuario = (UsuarioDTO) intent.getSerializableExtra(Constants.EXTRA_USUARIO_LOGADO);
         } else if (getArguments() != null){
@@ -116,7 +112,10 @@ public class IniciaPercursoFragment extends Fragment implements AdapterView.OnIt
             public void onClick(View v){
                 handleGPS(locManager);
                 insertData(v);
-                startActivity(new Intent(getContext(), MonitorAvisoActivity.class));
+                Intent intentLocation = new Intent(getContext(), MonitorAvisoActivity.class);
+                intentLocation.putExtra(Constants.EXTRA_USUARIO_LOGADO, usuario);
+
+                startActivity(intentLocation);
             }
         });
         return view;
@@ -126,7 +125,7 @@ public class IniciaPercursoFragment extends Fragment implements AdapterView.OnIt
         //Aqui iniciamos o auto complete de endereços
         //Fazendo o bind das views e passando o adapter e o listener
         mAdapter = new GooglePlacesAutocompleteAdapter(getActivity(), R.layout.list_item );
-
+        mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         this.txtInicioPercurso = (AutoCompleteTextView) view.findViewById(R.id.txtInicio);
         txtInicioPercurso.setAdapter(mAdapter);
         txtInicioPercurso.setOnItemClickListener(mOnLocationClicked);
@@ -242,13 +241,18 @@ public class IniciaPercursoFragment extends Fragment implements AdapterView.OnIt
             new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    GenericTypeIndicator<List<MotoDTO>> genericList = new GenericTypeIndicator<List<MotoDTO>>() {
+                    /*GenericTypeIndicator<List<MotoDTO>> genericList = new GenericTypeIndicator<List<MotoDTO>>() {
                         @Override
                         protected Object clone() throws CloneNotSupportedException {
                             return super.clone();
                         }
                     };
-                    listMotos = dataSnapshot.getValue(genericList);
+                    listMotos = dataSnapshot.getValue(genericList);*/
+                    for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                        Map<String, Object> mapMotos = (Map<String, Object>) postSnapshot.getValue();
+                        Log.i(TAG, "Data: " + postSnapshot.getValue());
+                        //listMotos.add(mapMotos);
+                    }
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
