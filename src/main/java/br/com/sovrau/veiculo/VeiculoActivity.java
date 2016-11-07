@@ -163,21 +163,20 @@ public class VeiculoActivity extends Activity implements AdapterView.OnItemSelec
                     return;
                 } else {
                     String motoID = CodeUtils.getInstance().getGenericID(nmMoto);
-                    Map<String, Object> mappedMoto = new HashMap();
-                    mappedMoto.put("id", motoID);
-                    mappedMoto.put("marca", marcaEscolhida.getNmMarca());
-                    mappedMoto.put("modelo", nmModelo);
-                    mappedMoto.put("nome", nmMoto);
-                    mappedMoto.put("cilindradas", cilindradasCorrigido);
-                    mappedMoto.put("tanque", tanque);
-                    mappedMoto.put("ano", ano);
-                    mappedMoto.put("placa", placa);
-                    mappedMoto.put("obs", obs.length() > 100 ? obs.substring(0, 99) : obs);
+
+                    MotoDTO moto = new MotoDTO();
+                    moto.setIdMoto(motoID);
+                    moto.setNmMarca(marcaEscolhida.getNmMarca());
+                    moto.setNmModelo(nmModelo);
+                    moto.setNmMoto(nmMoto);
+                    moto.setAnoFabricacao(Integer.valueOf(ano.trim()));
+                    moto.setPlaca(placa);
+                    moto.setObs(obs.length() > 100 ? obs.substring(0, 99) : obs);
+
                     try{
-                        mVeiculoRef.child(motoID).setValue(mappedMoto);
                         Intent intentMotoAdd = new Intent(getApplicationContext(), InfoInicialActivity.class);
-                        intentMotoAdd.putExtra(Constants.EXTRA_MOTO_ADICIONADA, motoID);
                         intentMotoAdd.putExtra(Constants.EXTRA_USUARIO_LOGADO, usuario);
+                        intentMotoAdd.putExtra(Constants.EXTRA_MOTO_EDITAR, moto);
                         startActivity(intentMotoAdd);
                     } catch(Exception e) {
                         Log.e("ERR_UPDATE_MOTO", "Erro ao atualizar a moto: " + e.getMessage());

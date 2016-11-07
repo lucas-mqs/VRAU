@@ -6,8 +6,15 @@ import android.location.LocationManager;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import br.com.sovrau.constants.Constants;
+import br.com.sovrau.dto.MotoDTO;
 
 
 /**
@@ -74,5 +81,35 @@ public class CodeUtils {
                 TimeUnit.MILLISECONDS.toSeconds(millis) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
         );
+    }
+    public List<MotoDTO> parseMapToListMoto(Map<String, Object> mapMotos) {
+        List<MotoDTO> listMotos = new ArrayList<>();
+        for(Map.Entry<String, Object> entry : mapMotos.entrySet()){
+            listMotos.add(parseMapToMotoDTO((HashMap)entry.getValue()));
+        }
+        return listMotos;
+    }
+    private MotoDTO parseMapToMotoDTO(Map mapMotos) {
+        MotoDTO moto = new MotoDTO();
+        //moto.setMonitorarFreios(mapMotos.get(Constants.MONITORAR_FREIOS));
+        moto.setOdometro(Long.valueOf(mapMotos.get(Constants.ODOMETRO).toString()));
+        moto.setCilindradasMoto(Integer.valueOf((mapMotos).get(Constants.CILINDRADAS).toString()));
+        //moto.setLocalCelular(mapMotos.get(Constants.LOCAL_CELULAR).toString());
+        //moto.setMonitorarCombustivel(mapMotos.get(Constants.MONITORAR_COMBUSTIVEL).toString());
+        moto.setNmModelo(mapMotos.get(Constants.MODELO).toString());
+        moto.setNmMarca(mapMotos.get(Constants.MARCA).toString());
+        moto.setNmMoto(mapMotos.get(Constants.NOME).toString());
+        //moto.setMonitorarOleo(mapMotos.get(Constants.MONITORAR_OLEO).toString());
+        moto.setAnoFabricacao(Integer.valueOf(mapMotos.get(Constants.ANO).toString()));
+        //moto.setMonitorarLiquido(mapMotos.get(Constants.MONITORAR_LIQUIDO).toString());
+        moto.setIdMoto(mapMotos.get(Constants.ID).toString());
+        moto.setObs(mapMotos.get(Constants.OBS).toString());
+        moto.setTanque(Integer.valueOf(mapMotos.get(Constants.TANQUE).toString()));
+        //moto.setMonitorarCxDirecao(mapMotos.get(Constants.MONITORAR_CX_DIRECAO).toString());
+        //moto.setMonitorarPneus(mapMotos.get(Constants.MONITORAR_PNEUS).toString());
+        //moto.setMonitorarPastilhas(mapMotos.get(Constants.MONITORAR_PASTILHAS).toString());
+        moto.setPlaca(mapMotos.get(Constants.PLACA).toString());
+
+        return moto;
     }
 }

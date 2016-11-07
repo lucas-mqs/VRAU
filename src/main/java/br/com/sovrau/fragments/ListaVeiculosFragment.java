@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,16 +25,18 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.sovrau.R;
+import br.com.sovrau.adapters.MotoArrayAdapter;
 import br.com.sovrau.constants.Constants;
 import br.com.sovrau.dto.MotoDTO;
 import br.com.sovrau.dto.UsuarioDTO;
 import br.com.sovrau.providers.DatabaseHelper;
+import br.com.sovrau.utilities.CodeUtils;
 import br.com.sovrau.veiculo.VeiculoActivity;
 
 /**
  * Created by Lucas on 13/09/2016.
  */
-public class ListaVeiculosFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class ListaVeiculosFragment extends Fragment  {
     private final static String TAG = ListaVeiculosFragment.class.getSimpleName();
 
     private UsuarioDTO usuario;
@@ -47,7 +48,7 @@ public class ListaVeiculosFragment extends Fragment implements AdapterView.OnIte
     private String motoUrl;
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     private DatabaseReference mChildRef;
-    private List<Map<String, Object>> motos = new ArrayList<>();
+    private List<MotoDTO> motos = new ArrayList<>();
     private View rootView = null;
 
     public static ListaVeiculosFragment newInstance(){
@@ -72,15 +73,29 @@ public class ListaVeiculosFragment extends Fragment implements AdapterView.OnIte
             String localName = usuario.getNome().contains(" ") ? usuario.getNome().split(" ")[0] : usuario.getNome();
             lblBoasVindas.setText(lblBoasVindas.getText().toString().concat(localName));
         }
-
-        //listMoto = getListView();
-       String[] de = {"nome", "marca", "modelo", "ano"};
-       int[] para = {R.id.customNmMoto, R.id.custonNmMarca, R.id.customNmModelo, R.id.customAnoFab};
-       SimpleAdapter listAdapter = new SimpleAdapter(getActivity(), listarVeiculos(), R.layout.custom_list_motos, de, para);
-       listAdapter.notifyDataSetChanged();
-       listMoto.setAdapter(listAdapter);
-       listMoto.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-       //setListAdapter(new SimpleAdapter(getContext(), listarVeiculos(), R.layout.custom_list_motos, de, para));
+        mChildRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    Map<String, Object> mapMotos = (Map<String, Object>) postSnapshot.getValue();
+                    Log.i(TAG, "Data: " + postSnapshot.getValue());
+                    motos.addAll(CodeUtils.getInstance().parseMapToListMoto(mapMotos));
+                }
+                MotoArrayAdapter motoArrayAdapter = new MotoArrayAdapter(getActivity(), R.layout.custom_list_motos, motos);
+                listMoto.setAdapter(motoArrayAdapter);
+                listMoto.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+                listMoto.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        editarMoto(parent, view, position, id);
+                    }
+                });
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, "Erro: " + databaseError.getCode() + " " + databaseError.getMessage());
+            }
+        });
 
        fab.setOnClickListener(new View.OnClickListener() {
            @Override
@@ -92,43 +107,16 @@ public class ListaVeiculosFragment extends Fragment implements AdapterView.OnIte
        });
        return rootView;
     }
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Map<String, Object> map = motos.get(position);
-        String idMoto = (String) map.get("id");
-        String nmMoto = (String) map.get("nome");
-        String nmMarca = (String) map.get("marca");
-        String nmModelo = (String) map.get("modelo");
-        int anoFab = (int) map.get("ano");
+    private void editarMoto(AdapterView<?> parent, View view, int position, long id) {
+        MotoDTO motoEscolhida = motos.get(position);
+        String idMoto = motoEscolhida.getIdMoto();
+        String nmMoto = motoEscolhida.getNmMoto();
 
         String mensagem = "Moto selecionada: "+ idMoto + " - " + nmMoto;
         Toast.makeText(getContext(), mensagem, Toast.LENGTH_SHORT).show();
-        //TODO:
-        MotoDTO motoSelecionada = new MotoDTO();
-        motoSelecionada.setIdMoto(idMoto);
-        motoSelecionada.setNmMoto(nmMoto);
-        motoSelecionada.setNmMarca(nmMarca);
-        motoSelecionada.setNmModelo(nmModelo);
-        motoSelecionada.setAnoFabricacao(anoFab);
-
-        startActivity(new Intent(getContext(), VeiculoActivity.class));
-    }
-    private List<Map<String, Object>> listarVeiculos(){
-        mChildRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.e(TAG, "DataSnap Size " + dataSnapshot.getChildrenCount());
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    Map<String, Object> mapMotos = (Map<String, Object>) postSnapshot.getValue();
-                    Log.i(TAG, "Data: " + postSnapshot.getValue());
-                    motos.add(mapMotos);
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, "Erro: " + databaseError.getCode() + " " + databaseError.getMessage());
-            }
-        });
-        return this.motos;
+        Intent intentMotoEditar = new Intent(getContext(), VeiculoActivity.class);
+        intentMotoEditar.putExtra(Constants.EXTRA_MOTO_EDITAR, motoEscolhida);
+        intentMotoEditar.putExtra(Constants.EXTRA_USUARIO_LOGADO, usuario);
+        startActivity(intentMotoEditar);
     }
 }

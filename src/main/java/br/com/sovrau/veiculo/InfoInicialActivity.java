@@ -26,6 +26,7 @@ import java.util.Map;
 
 import br.com.sovrau.R;
 import br.com.sovrau.constants.Constants;
+import br.com.sovrau.dto.MotoDTO;
 import br.com.sovrau.dto.UsuarioDTO;
 import br.com.sovrau.user.UserHome;
 import br.com.sovrau.utilities.CodeUtils;
@@ -47,7 +48,7 @@ public class InfoInicialActivity extends Activity {
     private RadioGroup radioGroupLocalCelular;
     private RadioButton radioBtnLocalCelular;
     private AppCompatButton btnSaveInfos;
-    private String idMotoAdd;
+    private MotoDTO motoInicialDTO = new MotoDTO();
     private long valorOdometro;
     private String strDataRevisao;
     private static final int DATE_DIALOG_ID = 0;
@@ -64,13 +65,13 @@ public class InfoInicialActivity extends Activity {
         initComponents();
 
         final Intent intent = getIntent();
-        if (intent.hasExtra(Constants.EXTRA_MOTO_ADICIONADA)) {
-            idMotoAdd = intent.getStringExtra(Constants.EXTRA_MOTO_ADICIONADA);
+        if (intent.hasExtra(Constants.EXTRA_MOTO_EDITAR)) {
+            motoInicialDTO = (MotoDTO) intent.getSerializableExtra(Constants.EXTRA_MOTO_EDITAR);
         }
         if (intent.hasExtra(Constants.EXTRA_USUARIO_LOGADO)) {
             usuario = (UsuarioDTO) intent.getSerializableExtra(Constants.EXTRA_USUARIO_LOGADO);
         }
-        mChildRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario()).child(Constants.NODE_MOTO).child(idMotoAdd);
+        mChildRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario()).child(Constants.NODE_MOTO).child(motoInicialDTO.getIdMoto());
 
         dataUltimaRevisao.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,6 +130,15 @@ public class InfoInicialActivity extends Activity {
             return;
         } else {
             Map<String, Object> mappedInfos = new HashMap<>();
+            mappedInfos.put("id", motoInicialDTO.getIdMoto());
+            mappedInfos.put("marca", motoInicialDTO.getNmMarca());
+            mappedInfos.put("modelo", motoInicialDTO.getNmModelo());
+            mappedInfos.put("nome", motoInicialDTO.getNmMoto());
+            mappedInfos.put("cilindradas", motoInicialDTO.getCilindradasMoto());
+            mappedInfos.put("tanque", motoInicialDTO.getTanque());
+            mappedInfos.put("ano", motoInicialDTO.getAnoFabricacao());
+            mappedInfos.put("placa", motoInicialDTO.getPlaca());
+            mappedInfos.put("obs", motoInicialDTO.getObs().length() > 100 ? motoInicialDTO.getObs().substring(0, 99) : motoInicialDTO.getObs());
             mappedInfos.put("odometro", odometro);
             mappedInfos.put("dataRevisao", dataRevisao);
             mappedInfos.put("isMonitorarCombustivel", isMonitorarCombustivel);

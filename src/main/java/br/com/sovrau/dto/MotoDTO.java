@@ -17,11 +17,12 @@ public class MotoDTO implements Serializable{
     private int anoFabricacao;
     private String placa;
     private String obs;
+    private long odometro;
 
     public MotoDTO() {
     }
 
-    public MotoDTO(String idMoto, long idMarca, String nmMarca, String idUsuario, String nmMoto, int cilindradasMoto, String nmModelo, int tanque, int anoFabricacao, String placa, String obs) {
+    public MotoDTO(String idMoto, long idMarca, String nmMarca, String idUsuario, String nmMoto, int cilindradasMoto, String nmModelo, int tanque, int anoFabricacao, String placa, String obs, long odometro) {
         this.idMoto = idMoto;
         this.idMarca = idMarca;
         this.nmMarca = nmMarca;
@@ -33,6 +34,7 @@ public class MotoDTO implements Serializable{
         this.anoFabricacao = anoFabricacao;
         this.placa = placa;
         this.obs = obs;
+        this.odometro = odometro;
     }
 
     public String getIdMoto() {
@@ -123,6 +125,14 @@ public class MotoDTO implements Serializable{
         this.placa = placa;
     }
 
+    public long getOdometro() {
+        return odometro;
+    }
+
+    public void setOdometro(long odometro) {
+        this.odometro = odometro;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -134,6 +144,7 @@ public class MotoDTO implements Serializable{
         if (cilindradasMoto != motoDTO.cilindradasMoto) return false;
         if (tanque != motoDTO.tanque) return false;
         if (anoFabricacao != motoDTO.anoFabricacao) return false;
+        if (odometro != motoDTO.odometro) return false;
         if (idMoto != null ? !idMoto.equals(motoDTO.idMoto) : motoDTO.idMoto != null) return false;
         if (nmMarca != null ? !nmMarca.equals(motoDTO.nmMarca) : motoDTO.nmMarca != null)
             return false;
@@ -146,7 +157,6 @@ public class MotoDTO implements Serializable{
         return obs != null ? obs.equals(motoDTO.obs) : motoDTO.obs == null;
 
     }
-
     @Override
     public int hashCode() {
         int result = idMoto != null ? idMoto.hashCode() : 0;
@@ -160,6 +170,25 @@ public class MotoDTO implements Serializable{
         result = 31 * result + anoFabricacao;
         result = 31 * result + (placa != null ? placa.hashCode() : 0);
         result = 31 * result + (obs != null ? obs.hashCode() : 0);
+        result = 31 * result + (int) (odometro ^ (odometro >>> 32));
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "MotoDTO{" +
+                "idMoto='" + idMoto + '\'' +
+                ", idMarca=" + idMarca +
+                ", nmMarca='" + nmMarca + '\'' +
+                ", idUsuario='" + idUsuario + '\'' +
+                ", nmMoto='" + nmMoto + '\'' +
+                ", cilindradasMoto=" + cilindradasMoto +
+                ", nmModelo='" + nmModelo + '\'' +
+                ", tanque=" + tanque +
+                ", anoFabricacao=" + anoFabricacao +
+                ", placa='" + placa + '\'' +
+                ", obs='" + obs + '\'' +
+                ", odometro=" + odometro +
+                '}';
     }
 }
