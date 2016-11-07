@@ -1,42 +1,86 @@
 package br.com.sovrau.dto;
 
-import java.io.Serializable;
-
 /**
- * Created by Lucas on 18/09/2016.
+ * Created by Lucas.Marques on 07/11/2016.
  */
-public class PercursoDTO implements Serializable {
-    private String idPercurso;
+public class PercursoDTO {
+    private boolean isMedirAuto;
+    private long odometroInicial;
+    private String enderecoFinal;
+    private String motivo;
+    private String id;
+    private boolean isDetectarFimPercurso;
+    private String enderecoInicial;
     private String tipoPercurso;
-    private String inicioPercurso;
-    private String finalPercurso;
-    private String odometroInicial;
-    private String odometroFinal;
-    private String obs;
-    private boolean isAuto;
-    private boolean isDetectarFim;
 
-    public PercursoDTO() {
+    public PercursoDTO(){
+
     }
-
-    public PercursoDTO(String idPercurso, String tipoPercurso, String inicioPercurso, String finalPercurso, String odometroInicial, String odometroFinal, String obs, boolean isAuto, boolean isDetectarFim) {
-        this.idPercurso = idPercurso;
-        this.tipoPercurso = tipoPercurso;
-        this.inicioPercurso = inicioPercurso;
-        this.finalPercurso = finalPercurso;
+    public PercursoDTO(boolean isMedirAuto, long odometroInicial, String enderecoFinal, String motivo, String id, boolean isDetectarFimPercurso, String enderecoInicial, String tipoPercurso) {
+        this.isMedirAuto = isMedirAuto;
         this.odometroInicial = odometroInicial;
-        this.odometroFinal = odometroFinal;
-        this.obs = obs;
-        this.isAuto = isAuto;
-        this.isDetectarFim = isDetectarFim;
+        this.enderecoFinal = enderecoFinal;
+        this.motivo = motivo;
+        this.id = id;
+        this.isDetectarFimPercurso = isDetectarFimPercurso;
+        this.enderecoInicial = enderecoInicial;
+        this.tipoPercurso = tipoPercurso;
     }
 
-    public String getIdPercurso() {
-        return idPercurso;
+    public boolean isMedirAuto() {
+        return isMedirAuto;
     }
 
-    public void setIdPercurso(String idPercurso) {
-        this.idPercurso = idPercurso;
+    public void setMedirAuto(boolean medirAuto) {
+        isMedirAuto = medirAuto;
+    }
+
+    public long getOdometroInicial() {
+        return odometroInicial;
+    }
+
+    public void setOdometroInicial(long odometroInicial) {
+        this.odometroInicial = odometroInicial;
+    }
+
+    public String getEnderecoFinal() {
+        return enderecoFinal;
+    }
+
+    public void setEnderecoFinal(String enderecoFinal) {
+        this.enderecoFinal = enderecoFinal;
+    }
+
+    public String getMotivo() {
+        return motivo;
+    }
+
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public boolean isDetectarFimPercurso() {
+        return isDetectarFimPercurso;
+    }
+
+    public void setDetectarFimPercurso(boolean detectarFimPercurso) {
+        isDetectarFimPercurso = detectarFimPercurso;
+    }
+
+    public String getEnderecoInicial() {
+        return enderecoInicial;
+    }
+
+    public void setEnderecoInicial(String enderecoInicial) {
+        this.enderecoInicial = enderecoInicial;
     }
 
     public String getTipoPercurso() {
@@ -47,62 +91,6 @@ public class PercursoDTO implements Serializable {
         this.tipoPercurso = tipoPercurso;
     }
 
-    public String getInicioPercurso() {
-        return inicioPercurso;
-    }
-
-    public void setInicioPercurso(String inicioPercurso) {
-        this.inicioPercurso = inicioPercurso;
-    }
-
-    public String getFinalPercurso() {
-        return finalPercurso;
-    }
-
-    public void setFinalPercurso(String finalPercurso) {
-        this.finalPercurso = finalPercurso;
-    }
-
-    public String getOdometroInicial() {
-        return odometroInicial;
-    }
-
-    public void setOdometroInicial(String odometroInicial) {
-        this.odometroInicial = odometroInicial;
-    }
-
-    public String getOdometroFinal() {
-        return odometroFinal;
-    }
-
-    public void setOdometroFinal(String odometroFinal) {
-        this.odometroFinal = odometroFinal;
-    }
-
-    public String getObs() {
-        return obs;
-    }
-
-    public void setObs(String obs) {
-        this.obs = obs;
-    }
-
-    public boolean isAuto() {
-        return isAuto;
-    }
-
-    public void setAuto(boolean auto) {
-        isAuto = auto;
-    }
-
-    public boolean isDetectarFim() {
-        return isDetectarFim;
-    }
-
-    public void setDetectarFim(boolean detectarFim) {
-        isDetectarFim = detectarFim;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -110,35 +98,43 @@ public class PercursoDTO implements Serializable {
 
         PercursoDTO that = (PercursoDTO) o;
 
-        if (isAuto != that.isAuto) return false;
-        if (isDetectarFim != that.isDetectarFim) return false;
-        if (idPercurso != null ? !idPercurso.equals(that.idPercurso) : that.idPercurso != null)
+        if (isMedirAuto != that.isMedirAuto) return false;
+        if (odometroInicial != that.odometroInicial) return false;
+        if (isDetectarFimPercurso != that.isDetectarFimPercurso) return false;
+        if (enderecoFinal != null ? !enderecoFinal.equals(that.enderecoFinal) : that.enderecoFinal != null)
             return false;
-        if (tipoPercurso != null ? !tipoPercurso.equals(that.tipoPercurso) : that.tipoPercurso != null)
+        if (motivo != null ? !motivo.equals(that.motivo) : that.motivo != null) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (enderecoInicial != null ? !enderecoInicial.equals(that.enderecoInicial) : that.enderecoInicial != null)
             return false;
-        if (inicioPercurso != null ? !inicioPercurso.equals(that.inicioPercurso) : that.inicioPercurso != null)
-            return false;
-        if (finalPercurso != null ? !finalPercurso.equals(that.finalPercurso) : that.finalPercurso != null)
-            return false;
-        if (odometroInicial != null ? !odometroInicial.equals(that.odometroInicial) : that.odometroInicial != null)
-            return false;
-        if (odometroFinal != null ? !odometroFinal.equals(that.odometroFinal) : that.odometroFinal != null)
-            return false;
-        return obs != null ? obs.equals(that.obs) : that.obs == null;
+        return tipoPercurso != null ? tipoPercurso.equals(that.tipoPercurso) : that.tipoPercurso == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = idPercurso != null ? idPercurso.hashCode() : 0;
+        int result = (isMedirAuto ? 1 : 0);
+        result = 31 * result + (int) (odometroInicial ^ (odometroInicial >>> 32));
+        result = 31 * result + (enderecoFinal != null ? enderecoFinal.hashCode() : 0);
+        result = 31 * result + (motivo != null ? motivo.hashCode() : 0);
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = 31 * result + (isDetectarFimPercurso ? 1 : 0);
+        result = 31 * result + (enderecoInicial != null ? enderecoInicial.hashCode() : 0);
         result = 31 * result + (tipoPercurso != null ? tipoPercurso.hashCode() : 0);
-        result = 31 * result + (inicioPercurso != null ? inicioPercurso.hashCode() : 0);
-        result = 31 * result + (finalPercurso != null ? finalPercurso.hashCode() : 0);
-        result = 31 * result + (odometroInicial != null ? odometroInicial.hashCode() : 0);
-        result = 31 * result + (odometroFinal != null ? odometroFinal.hashCode() : 0);
-        result = 31 * result + (obs != null ? obs.hashCode() : 0);
-        result = 31 * result + (isAuto ? 1 : 0);
-        result = 31 * result + (isDetectarFim ? 1 : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "PercursoDTO{" +
+                "isMedirAuto=" + isMedirAuto +
+                ", odometroInicial=" + odometroInicial +
+                ", enderecoFinal='" + enderecoFinal + '\'' +
+                ", motivo='" + motivo + '\'' +
+                ", id='" + id + '\'' +
+                ", isDetectarFimPercurso=" + isDetectarFimPercurso +
+                ", enderecoInicial='" + enderecoInicial + '\'' +
+                ", tipoPercurso='" + tipoPercurso + '\'' +
+                '}';
     }
 }
