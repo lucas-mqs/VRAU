@@ -200,10 +200,11 @@ public class IniciaPercursoFragment extends Fragment implements AdapterView.OnIt
             mappedPercurso.put("tipoPercurso", tipoPercurso.getText());
             mappedPercurso.put("moto", motoEscolhida.getIdMoto());
 
-            mPercursoRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario()).child(Constants.NODE_MOTO).child(Constants.NODE_PERCURSO);
+            mPercursoRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario()).child(Constants.NODE_PERCURSO);
 
             try{
                 mPercursoRef.child(percursoID).setValue(mappedPercurso);
+                mPercursoRef.getParent().getParent().child(Constants.NODE_PERCURSO).setValue(mappedPercurso);
             }catch (Exception e){
                 Log.e("ERR_INSERT_PERCURSO", "Erro ao inserir percurso: " + e.getMessage());
                 Toast.makeText(getContext(), "Erro ao inserir percurso:\nPor favor, tente novamente", Toast.LENGTH_SHORT).show();

@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
@@ -54,7 +55,7 @@ public class PercursoManualFragment extends Fragment {
     private List<MotoDTO> listMotos = new ArrayList<>();
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     private DatabaseReference mPercursoRef;
-    private MotoDTO motoDTO;
+    private DatabaseReference mMotoRef;
     private MotoDTO motoEscolhida = new MotoDTO();
     private UsuarioDTO usuario;
     private static final String TAG = PercursoManualFragment.class.getSimpleName();
@@ -74,7 +75,7 @@ public class PercursoManualFragment extends Fragment {
         initComponents(view);
         Intent intent = getActivity().getIntent();
         usuario = (UsuarioDTO) intent.getSerializableExtra(Constants.EXTRA_USUARIO_LOGADO);
-        motoDTO = (MotoDTO) intent.getSerializableExtra(Constants.EXTRA_MOTO_ADICIONADA);
+        populateSpinner();
         spMotosPercurso.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -84,14 +85,12 @@ public class PercursoManualFragment extends Fragment {
                        motoEscolhida = listMotos.get(i);
                    }
                 }
-
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
-        populateSpinner();
         btnIniciaPercurso.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,7 +118,7 @@ public class PercursoManualFragment extends Fragment {
         this.spMotosPercurso = (Spinner) view.findViewById(R.id.spListaMotosPercurso);
     }
     //TODO: Deixar Inicio e Fim do Percurso Opcionais
-    private boolean validate(String txtInicioPercurso, String txtFinalPercurso, String txtOdometroInicial) {
+    private boolean validate(String txtInicioPercurso, String txtFinalPercurso, String txtOdometroInicial, String motoEscolhida) {
         boolean isValid = true;
         if (ValidationUtils.getInstance().isNullOrEmpty(txtInicioPercurso)) {
             Toast.makeText(getActivity().getApplicationContext(), "Por favor, preencha um início", Toast.LENGTH_SHORT).show();
@@ -131,6 +130,10 @@ public class PercursoManualFragment extends Fragment {
         }
         if (ValidationUtils.getInstance().isNullOrEmpty(txtOdometroInicial)) {
             Toast.makeText(getActivity().getApplicationContext(), "Por favor, informe a quilometragem atual da moto", Toast.LENGTH_SHORT).show();
+            isValid = false;
+        }
+        if (ValidationUtils.getInstance().isNullOrEmpty(motoEscolhida)){
+            Toast.makeText(getActivity().getApplicationContext(), "Por favor, informe para qual moto é o percurso", Toast.LENGTH_SHORT).show();
             isValid = false;
         }
         return isValid;
@@ -145,7 +148,7 @@ public class PercursoManualFragment extends Fragment {
         int localCelular = this.rdTipoPercurso.getCheckedRadioButtonId();
         this.tipoPercurso = (RadioButton) view.findViewById(localCelular);
 
-        if (!validate(txtInicioPercurso, txtFinalPercurso, txtOdometroInicial)) {
+        if (!validate(txtInicioPercurso, txtFinalPercurso, txtOdometroInicial, motoEscolhida.getIdMoto())) {
             Toast.makeText(getActivity().getApplicationContext(), "Por favor, preencha os campos corretamente", Toast.LENGTH_LONG).show();
             return;
         } else {
@@ -159,11 +162,14 @@ public class PercursoManualFragment extends Fragment {
             mappedPercurso.put("motivo", txtMotivo);
             mappedPercurso.put("isMedirAuto", false);
             mappedPercurso.put("tipoPercurso", tipoPercurso.getText());
-            mappedPercurso.put("moto", motoDTO.getIdMoto());
+            mappedPercurso.put("moto", motoEscolhida.getIdMoto());
 
             try {
-                mPercursoRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario()).child(Constants.NODE_MOTO).child(motoDTO.getIdMoto()).child(Constants.NODE_PERCURSO);
+                mPercursoRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario()).child(Constants.NODE_MOTO).child(motoEscolhida.getIdMoto()).child(Constants.NODE_PERCURSO);
                 mPercursoRef.child(percursoID).setValue(mappedPercurso);
+                mPercursoRef.getParent().getParent().getParent().child(Constants.NODE_PERCURSO).setValue(mappedPercurso);
+
+                motoEscolhida = new MotoDTO();
             } catch (Exception e) {
                 Log.e("ERR_INSERT_PERCURSO", "Erro ao inserir percurso: " + e.getMessage());
                 Toast.makeText(getContext(), "Erro ao inserir percurso:\nPor favor, tente novamente", Toast.LENGTH_SHORT).show();
@@ -172,29 +178,29 @@ public class PercursoManualFragment extends Fragment {
     }
 
     private void populateSpinner() {
-        listMotos();
-        List<String> motoID = new ArrayList<>();
-        for (MotoDTO motoDTO : listMotos) {
-            motoID.add(motoDTO.getNmMoto());
-        }
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, motoID);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        this.spMotosPercurso.setAdapter(dataAdapter);
-
-    }
-
-    private void listMotos() {
-        mRootRef.child(usuario.getIdUSuario()).child(Constants.NODE_MOTO).addValueEventListener(
+        mMotoRef = mRootRef.child(usuario.getIdUSuario()).child(Constants.NODE_MOTO);
+        mMotoRef.addValueEventListener(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        GenericTypeIndicator<List<MotoDTO>> genericList = new GenericTypeIndicator<List<MotoDTO>>() {
-                            @Override
-                            protected Object clone() throws CloneNotSupportedException {
-                                return super.clone();
-                            }
-                        };
-                        listMotos = dataSnapshot.getValue(genericList);
+                        for(DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                            Map<String, Object> mapMotos = (Map<String, Object>) postSnapshot.getValue();
+                            listMotos.addAll(CodeUtils.getInstance().parseMapToListMoto(mapMotos));
+                        }
+                        List<String> motoID = new ArrayList<>();
+                        for (MotoDTO motoDTO : listMotos) {
+                            motoID.add(motoDTO.getNmMoto());
+                        }
+
+                        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, motoID);
+                        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spMotosPercurso.setAdapter(dataAdapter);
+                        if(listMotos.isEmpty()) {
+                            Toast.makeText(getContext(), "É preciso adicionar ao menos uma moto para iniciar um percurso", Toast.LENGTH_SHORT).show();
+                        } else if (listMotos.size() == 1) {
+                            spMotosPercurso.setSelection(dataAdapter.getPosition(listMotos.get(0).getNmMoto()));
+                            spMotosPercurso.setEnabled(false);
+                        }
                     }
 
                     @Override
@@ -205,4 +211,5 @@ public class PercursoManualFragment extends Fragment {
         );
 
     }
+
 }

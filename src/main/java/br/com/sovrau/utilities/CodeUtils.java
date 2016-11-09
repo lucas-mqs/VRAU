@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import br.com.sovrau.constants.Constants;
 import br.com.sovrau.dto.MotoDTO;
+import br.com.sovrau.dto.PercursoDTO;
 
 
 /**
@@ -111,5 +112,25 @@ public class CodeUtils {
         moto.setPlaca(mapMotos.get(Constants.PLACA).toString());
 
         return moto;
+    }
+    public List<PercursoDTO> parseMapToListPercurso(Map<String, Object> mapPercursos) {
+        List<PercursoDTO> listPercursos = new ArrayList<>();
+        for(Map.Entry<String, Object> entry : mapPercursos.entrySet()){
+            listPercursos.add(parseMapToPercursoDTO((HashMap)entry.getValue()));
+        }
+        return listPercursos;
+    }
+    private PercursoDTO parseMapToPercursoDTO(Map mapPercurso) {
+        PercursoDTO percurso = new PercursoDTO();
+        percurso.setDetectarFimPercurso(Boolean.parseBoolean(mapPercurso.get(Constants.DETECTAR_FIM_PERCURSO).toString().trim()));
+        percurso.setEnderecoFinal(mapPercurso.get(Constants.FINAL_PERCURSO).toString());
+        percurso.setEnderecoInicial(mapPercurso.get(Constants.INICIO_PERCURSO).toString());
+        percurso.setId(mapPercurso.get(Constants.ID).toString());
+        percurso.setMotivo(mapPercurso.get(Constants.MOTIVO).toString());
+        percurso.setMedirAuto(Boolean.parseBoolean(mapPercurso.get(Constants.MEDIR_AUTO).toString()));
+        percurso.setOdometroInicial(Long.valueOf(mapPercurso.get(Constants.ODOMETRO_INICIAL).toString().trim()));
+        percurso.setTipoPercurso(mapPercurso.get(Constants.TIPO_PERCURSO).toString());
+
+        return percurso;
     }
 }

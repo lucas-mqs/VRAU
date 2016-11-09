@@ -29,7 +29,6 @@ import br.com.sovrau.adapters.MotoArrayAdapter;
 import br.com.sovrau.constants.Constants;
 import br.com.sovrau.dto.MotoDTO;
 import br.com.sovrau.dto.UsuarioDTO;
-import br.com.sovrau.providers.DatabaseHelper;
 import br.com.sovrau.utilities.CodeUtils;
 import br.com.sovrau.veiculo.VeiculoActivity;
 
@@ -43,7 +42,6 @@ public class ListaVeiculosFragment extends Fragment  {
     private TextView lblBoasVindas;
     private ListView listMoto;
     private FloatingActionButton fab;
-    private DatabaseHelper helper;
     private long motoSelecionada;
     private String motoUrl;
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
