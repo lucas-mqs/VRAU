@@ -3,7 +3,6 @@ package br.com.sovrau.alerta;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,15 +13,17 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import br.com.sovrau.R;
 import br.com.sovrau.constants.Constants;
@@ -40,9 +41,11 @@ public class ConfigAlertaActivity extends Activity {
     private Spinner spItens;
     private TextView txtPercentual;
     private SeekBar skPercentual;
+    private Spinner spMotosAlerta;
     private Button btnSalvarAlerta;
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     private DatabaseReference mChildRef;
+    private DatabaseReference mMotoRef;
     private UsuarioDTO usuarioDTO = new UsuarioDTO();
     private String itemAlerta;
     private int percentualAlerta = 0;
@@ -56,8 +59,27 @@ public class ConfigAlertaActivity extends Activity {
         initComponents();
         Intent intent = getIntent();
         usuarioDTO = (UsuarioDTO) intent.getSerializableExtra(Constants.EXTRA_USUARIO_LOGADO);
-        mRootRef.child(Constants.NODE_USER).child(usuarioDTO.getIdUSuario()).child(Constants.NODE_MOTO);
+        mMotoRef = mRootRef.child(Constants.NODE_USER).child(usuarioDTO.getIdUSuario());
+
         populateSpinner();
+
+        mMotoRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    Map<String, Object> adega = (Map<String, Object>) postSnapshot.getValue();
+                    Log.i(TAG, "Data: " + postSnapshot.getValue());
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         spItens.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -94,7 +116,6 @@ public class ConfigAlertaActivity extends Activity {
             public void onClick(View view) {
                 if(validate()){
                     try {
-                        mChildRef = mRootRef.child(Constants.NODE_ALERTA);
                         Map<String, Object> mappedAlerta = new HashMap();
                         mappedAlerta.put("id", CodeUtils.getInstance().getGenericID(""));
                         //"tipoAlerta", "percentualAtual", "indicador", "avisoTroca"
@@ -112,6 +133,7 @@ public class ConfigAlertaActivity extends Activity {
         });
     }
     private void initComponents(){
+        this.spMotosAlerta = (Spinner) findViewById(R.id.spMotosAlerta);
         this.spItens = (Spinner) findViewById(R.id.spItens);
         this.txtPercentual = (TextView) findViewById(R.id.txtPercentual);
         this.skPercentual = (SeekBar) findViewById(R.id.skDesgaste);
@@ -120,6 +142,7 @@ public class ConfigAlertaActivity extends Activity {
         this.skPercentual.setMax(100);
         this.percentualPalceHolder = this.txtPercentual.getText().toString();
         this.btnSalvarAlerta = (Button) findViewById(R.id.btnSalvarAlerta);
+
     }
     private void populateSpinner(){
         List<String> listItens = new ArrayList<>();
