@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import br.com.sovrau.constants.Constants;
+import br.com.sovrau.dto.AlertaDTO;
 import br.com.sovrau.dto.MotoDTO;
 import br.com.sovrau.dto.PercursoDTO;
 
@@ -132,5 +133,23 @@ public class CodeUtils {
         percurso.setTipoPercurso(mapPercurso.get(Constants.TIPO_PERCURSO).toString());
 
         return percurso;
+    }
+    public List<AlertaDTO> parseMapToListAlerta(Map<String,Object> mapAlertas) {
+        List<AlertaDTO> listAlertas = new ArrayList<>();
+        for(Map.Entry<String, Object> entry : mapAlertas.entrySet()){
+            listAlertas.add(parseMapToAlertaDTO((HashMap)entry.getValue()));
+        }
+        return listAlertas;
+    }
+    private AlertaDTO parseMapToAlertaDTO(Map mapAlerta) {
+        AlertaDTO alerta = new AlertaDTO();
+        alerta.setIdAlerta(mapAlerta.get(Constants.ID).toString());
+        alerta.setPorcentagemAlerta(Double.valueOf(mapAlerta.get(Constants.PERCENTUAL_AERTA).toString()));
+        alerta.setPorcentagemTotal(Double.parseDouble(mapAlerta.get(Constants.PERCENTUAL_ATUAL).toString()));
+        alerta.setTipoAlerta(Integer.valueOf(mapAlerta.get(Constants.TIPO_ALERTA).toString()));
+        alerta.setQtdeKmFalta(Long.valueOf(mapAlerta.get(Constants.KM_FALTANTES).toString()));
+        alerta.setQtdeKmRodado(Long.valueOf(mapAlerta.get(Constants.KM_RODADOS).toString()));
+
+        return alerta;
     }
 }

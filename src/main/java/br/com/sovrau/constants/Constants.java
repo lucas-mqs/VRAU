@@ -49,5 +49,17 @@ public class Constants {
     public static final String INICIO_PERCURSO = "inicio";
     public static final String TIPO_PERCURSO = "tipoPercurso";
 
+    //"tipoAlerta", "percentualAtual", "indicador", "avisoTroca"
+    //----------------------------------------------------------------------------------
+    //---------------------------------- CONSTANSTES ALERTAS ---------------------------
+
+    public static final String TIPO_ALERTA = "tipoAlerta";
+    public static final String PERCENTUAL_ATUAL = "percentualAtual";
+    public static final String INDICADOR = "indicador";
+    public static final String AVISO_TROCA = "avisoTroca";
+    public static final String PERCENTUAL_AERTA = "percentualAlerta";
+    public static final String KM_RODADOS = "qtdeKmRodado";
+    public static final String KM_FALTANTES = "qtdeKmFalta";
+
 
 }

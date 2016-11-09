@@ -64,7 +64,7 @@ public class ListaPercursoFragment extends Fragment {
                     Map<String, Object> mapPercursos = (Map<String, Object>) postSnapshot.getValue();
                     percursos.addAll(CodeUtils.getInstance().parseMapToListPercurso(mapPercursos));
                 }
-                PercursoArrayAdapter percursoArrayAdapter = new PercursoArrayAdapter(getActivity(), R.layout.custom_list_percurso, null);
+                PercursoArrayAdapter percursoArrayAdapter = new PercursoArrayAdapter(getActivity(), R.layout.custom_list_percurso, percursos);
                 listPercursos.setAdapter(percursoArrayAdapter);
                 listPercursos.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
             }

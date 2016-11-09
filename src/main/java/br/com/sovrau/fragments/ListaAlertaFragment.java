@@ -26,10 +26,13 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.sovrau.R;
+import br.com.sovrau.adapters.AlertaArrayAdapter;
 import br.com.sovrau.alerta.ConfigAlertaActivity;
 import br.com.sovrau.constants.Constants;
+import br.com.sovrau.dto.AlertaDTO;
 import br.com.sovrau.dto.MotoDTO;
 import br.com.sovrau.dto.UsuarioDTO;
+import br.com.sovrau.utilities.CodeUtils;
 
 /**
  * Created by Lucas on 18/09/2016.
@@ -39,10 +42,9 @@ public class ListaAlertaFragment extends Fragment implements AdapterView.OnItemC
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     private DatabaseReference mChildRef;
     private UsuarioDTO usuario;
-    private MotoDTO motoDTO;
     private FloatingActionButton btnFabAlertas;
     private ListView listAlertas;
-    private List<Map<String, Object>> alertas  = new ArrayList<>();
+    private List<AlertaDTO> alertas  = new ArrayList<>();
 
     public ListaAlertaFragment() {
     }
@@ -63,15 +65,25 @@ public class ListaAlertaFragment extends Fragment implements AdapterView.OnItemC
 
         Intent intent = getActivity().getIntent();
         usuario = (UsuarioDTO) intent.getSerializableExtra(Constants.EXTRA_USUARIO_LOGADO);
-        //motoDTO = (MotoDTO) intent.getSerializableExtra(Constants.EXTRA_MOTO_ADICIONADA);
-        mChildRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario()).child(Constants.NODE_MOTO).child(Constants.NODE_ALERTA);//.child(motoDTO.getIdMoto()).child(Constants.NODE_ALERTA);
+        mChildRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario()).child(Constants.NODE_MOTO).child(Constants.NODE_ALERTA);
 
-        String[] de = {"tipoAlerta", "percentualAtual", "indicador", "avisoTroca"};
-        int para[] = {R.id.txtAlertas, R.id.skPercentualAlertas, R.id.txtIndicadorPercentual, R.id.txtAvisoTroca};
-        SimpleAdapter listAdapter = new SimpleAdapter(getActivity(), listarAlertas(), R.layout.custom_list_alert, de, para);
-        listAdapter.notifyDataSetChanged();
-        listAlertas.setAdapter(listAdapter);
-        listAlertas.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        mChildRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    Map<String, Object> mapAlertas = (Map<String, Object>) postSnapshot.getValue();
+                    Log.i(TAG, "Data: " + postSnapshot.getValue());
+                    alertas.addAll(CodeUtils.getInstance().parseMapToListAlerta(mapAlertas));
+                }
+                AlertaArrayAdapter alertaArrayAdapter = new AlertaArrayAdapter(getActivity(), R.layout.custom_list_alert, null);
+                listAlertas.setAdapter(alertaArrayAdapter);
+                listAlertas.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, "Erro: " + databaseError.getCode() + " " + databaseError.getMessage());
+            }
+        });
 
         btnFabAlertas.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,27 +98,9 @@ public class ListaAlertaFragment extends Fragment implements AdapterView.OnItemC
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Map<String, Object> map = alertas.get(position);
-        String tipoAlerta = (String) map.get("tipoAlerta");
-        String percentualAtual = (String) map.get("percentualAtual");
-        String indicador = (String) map.get("indicador");
-        String avisoTroca = (String) map.get("avisoTroca");
-    }
-    private List<Map<String, Object>> listarAlertas(){
-        mChildRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Map<String, Object> mapAlertas = (Map<String, Object>) postSnapshot.getValue();
-                    Log.i(TAG, "Data: " + postSnapshot.getValue());
-                    alertas.add(mapAlertas);
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, "Erro: " + databaseError.getCode() + " " + databaseError.getMessage());
-            }
-        });
-        return this.alertas;
+        AlertaDTO alertaDTO = alertas.get(position);
+        String percentualAtual = String.valueOf(alertaDTO.getPorcentagemTotal());
+        String indicador = String.valueOf(alertaDTO.getPorcentagemAlerta());
+        String avisoTroca = String.valueOf(alertaDTO.getQtdeKmFalta());
     }
 }

@@ -102,4 +102,16 @@ public class AlertaDTO implements Serializable {
         result = 31 * result + tipoAlerta;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "AlertaDTO{" +
+                "idAlerta='" + idAlerta + '\'' +
+                ", porcentagemTotal=" + porcentagemTotal +
+                ", qtdeKmFalta=" + qtdeKmFalta +
+                ", qtdeKmRodado=" + qtdeKmRodado +
+                ", porcentagemAlerta=" + porcentagemAlerta +
+                ", tipoAlerta=" + tipoAlerta +
+                '}';
+    }
 }

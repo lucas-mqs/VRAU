@@ -169,7 +169,6 @@ public class PercursoManualFragment extends Fragment {
                 mPercursoRef.child(percursoID).setValue(mappedPercurso);
                 mPercursoRef.getParent().getParent().getParent().child(Constants.NODE_PERCURSO).setValue(mappedPercurso);
 
-                motoEscolhida = new MotoDTO();
             } catch (Exception e) {
                 Log.e("ERR_INSERT_PERCURSO", "Erro ao inserir percurso: " + e.getMessage());
                 Toast.makeText(getContext(), "Erro ao inserir percurso:\nPor favor, tente novamente", Toast.LENGTH_SHORT).show();
