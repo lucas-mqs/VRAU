@@ -161,7 +161,7 @@ public class GPSLocationService extends Service {
         map.put("distance", distance);
         map.put("velocidadeMediaMPS", avgVelocityMpS);
         map.put("velocidadeMediaKmH", avgVelocityKmH);
-        mPercursoRef.child(percurso.getIdPercurso()).updateChildren(map);
+        mPercursoRef.child(percurso.getId()).updateChildren(map);
         removeNotification();
     }
     private void initializeLocationManager() {
