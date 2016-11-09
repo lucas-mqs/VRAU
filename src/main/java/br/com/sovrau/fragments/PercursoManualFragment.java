@@ -177,7 +177,7 @@ public class PercursoManualFragment extends Fragment {
     }
 
     private void populateSpinner() {
-        mMotoRef = mRootRef.child(usuario.getIdUSuario()).child(Constants.NODE_MOTO);
+        mMotoRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario());
         mMotoRef.addValueEventListener(
                 new ValueEventListener() {
                     @Override
