@@ -1,6 +1,8 @@
 package br.com.sovrau.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Lucas on 03/05/2016.
@@ -18,11 +20,13 @@ public class MotoDTO implements Serializable{
     private String placa;
     private String obs;
     private long odometro;
+    private List<PercursoDTO> listPercurso = new ArrayList<>();
+    private List<AlertaDTO> listAlerta = new ArrayList<>();
 
     public MotoDTO() {
     }
 
-    public MotoDTO(String idMoto, long idMarca, String nmMarca, String idUsuario, String nmMoto, int cilindradasMoto, String nmModelo, int tanque, int anoFabricacao, String placa, String obs, long odometro) {
+    public MotoDTO(String idMoto, long idMarca, String nmMarca, String idUsuario, String nmMoto, int cilindradasMoto, String nmModelo, int tanque, int anoFabricacao, String placa, String obs, long odometro, List listPercurso, List listAlerta) {
         this.idMoto = idMoto;
         this.idMarca = idMarca;
         this.nmMarca = nmMarca;
@@ -35,6 +39,8 @@ public class MotoDTO implements Serializable{
         this.placa = placa;
         this.obs = obs;
         this.odometro = odometro;
+        this.listPercurso = listPercurso;
+        this.listAlerta = listAlerta;
     }
 
     public String getIdMoto() {
@@ -133,6 +139,22 @@ public class MotoDTO implements Serializable{
         this.odometro = odometro;
     }
 
+    public List<AlertaDTO> getListAlerta() {
+        return listAlerta;
+    }
+
+    public void setListAlerta(List<AlertaDTO> listAlerta) {
+        this.listAlerta = listAlerta;
+    }
+
+    public List<PercursoDTO> getListPercurso() {
+        return listPercurso;
+    }
+
+    public void setListPercurso(List<PercursoDTO> listPercurso) {
+        this.listPercurso = listPercurso;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -154,9 +176,13 @@ public class MotoDTO implements Serializable{
         if (nmModelo != null ? !nmModelo.equals(motoDTO.nmModelo) : motoDTO.nmModelo != null)
             return false;
         if (placa != null ? !placa.equals(motoDTO.placa) : motoDTO.placa != null) return false;
-        return obs != null ? obs.equals(motoDTO.obs) : motoDTO.obs == null;
+        if (obs != null ? !obs.equals(motoDTO.obs) : motoDTO.obs != null) return false;
+        if (listPercurso != null ? !listPercurso.equals(motoDTO.listPercurso) : motoDTO.listPercurso != null)
+            return false;
+        return listAlerta != null ? listAlerta.equals(motoDTO.listAlerta) : motoDTO.listAlerta == null;
 
     }
+
     @Override
     public int hashCode() {
         int result = idMoto != null ? idMoto.hashCode() : 0;
@@ -171,6 +197,8 @@ public class MotoDTO implements Serializable{
         result = 31 * result + (placa != null ? placa.hashCode() : 0);
         result = 31 * result + (obs != null ? obs.hashCode() : 0);
         result = 31 * result + (int) (odometro ^ (odometro >>> 32));
+        result = 31 * result + (listPercurso != null ? listPercurso.hashCode() : 0);
+        result = 31 * result + (listAlerta != null ? listAlerta.hashCode() : 0);
         return result;
     }
 

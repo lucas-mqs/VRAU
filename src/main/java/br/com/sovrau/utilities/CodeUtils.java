@@ -1,8 +1,13 @@
 package br.com.sovrau.utilities;
 
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -87,31 +92,44 @@ public class CodeUtils {
     public List<MotoDTO> parseMapToListMoto(Map<String, Object> mapMotos) {
         List<MotoDTO> listMotos = new ArrayList<>();
         for(Map.Entry<String, Object> entry : mapMotos.entrySet()){
-            listMotos.add(parseMapToMotoDTO((HashMap)entry.getValue()));
+            try {
+                listMotos.add(parseMapToMotoDTO((HashMap) entry.getValue()));
+            } catch(Exception e) {
+                Log.e("CodeUtils", e.getMessage());
+            }
         }
         return listMotos;
     }
     private MotoDTO parseMapToMotoDTO(Map mapMotos) {
         MotoDTO moto = new MotoDTO();
-        //moto.setMonitorarFreios(mapMotos.get(Constants.MONITORAR_FREIOS));
-        moto.setOdometro(Long.valueOf(mapMotos.get(Constants.ODOMETRO).toString()));
-        moto.setCilindradasMoto(Integer.valueOf((mapMotos).get(Constants.CILINDRADAS).toString()));
-        //moto.setLocalCelular(mapMotos.get(Constants.LOCAL_CELULAR).toString());
-        //moto.setMonitorarCombustivel(mapMotos.get(Constants.MONITORAR_COMBUSTIVEL).toString());
-        moto.setNmModelo(mapMotos.get(Constants.MODELO).toString());
-        moto.setNmMarca(mapMotos.get(Constants.MARCA).toString());
-        moto.setNmMoto(mapMotos.get(Constants.NOME).toString());
-        //moto.setMonitorarOleo(mapMotos.get(Constants.MONITORAR_OLEO).toString());
-        moto.setAnoFabricacao(Integer.valueOf(mapMotos.get(Constants.ANO).toString()));
-        //moto.setMonitorarLiquido(mapMotos.get(Constants.MONITORAR_LIQUIDO).toString());
-        moto.setIdMoto(mapMotos.get(Constants.ID).toString());
-        moto.setObs(mapMotos.get(Constants.OBS).toString());
-        moto.setTanque(Integer.valueOf(mapMotos.get(Constants.TANQUE).toString()));
-        //moto.setMonitorarCxDirecao(mapMotos.get(Constants.MONITORAR_CX_DIRECAO).toString());
-        //moto.setMonitorarPneus(mapMotos.get(Constants.MONITORAR_PNEUS).toString());
-        //moto.setMonitorarPastilhas(mapMotos.get(Constants.MONITORAR_PASTILHAS).toString());
-        moto.setPlaca(mapMotos.get(Constants.PLACA).toString());
+        if(mapMotos.get(Constants.ODOMETRO) != null) {
+            //moto.setMonitorarFreios(mapMotos.get(Constants.MONITORAR_FREIOS));
+            moto.setOdometro(Long.valueOf(mapMotos.get(Constants.ODOMETRO).toString()));
+            moto.setCilindradasMoto(Integer.valueOf((mapMotos).get(Constants.CILINDRADAS).toString()));
+            //moto.setLocalCelular(mapMotos.get(Constants.LOCAL_CELULAR).toString());
+            //moto.setMonitorarCombustivel(mapMotos.get(Constants.MONITORAR_COMBUSTIVEL).toString());
+            moto.setNmModelo(mapMotos.get(Constants.MODELO).toString());
+            moto.setNmMarca(mapMotos.get(Constants.MARCA).toString());
+            moto.setNmMoto(mapMotos.get(Constants.NOME).toString());
+            //moto.setMonitorarOleo(mapMotos.get(Constants.MONITORAR_OLEO).toString());
+            moto.setAnoFabricacao(Integer.valueOf(mapMotos.get(Constants.ANO).toString()));
+            //moto.setMonitorarLiquido(mapMotos.get(Constants.MONITORAR_LIQUIDO).toString());
+            moto.setIdMoto(mapMotos.get(Constants.ID).toString());
+            moto.setObs(mapMotos.get(Constants.OBS).toString());
+            moto.setTanque(Integer.valueOf(mapMotos.get(Constants.TANQUE).toString()));
+            //moto.setMonitorarCxDirecao(mapMotos.get(Constants.MONITORAR_CX_DIRECAO).toString());
+            //moto.setMonitorarPneus(mapMotos.get(Constants.MONITORAR_PNEUS).toString());
+            //moto.setMonitorarPastilhas(mapMotos.get(Constants.MONITORAR_PASTILHAS).toString());
+            moto.setPlaca(mapMotos.get(Constants.PLACA).toString());
+            if(mapMotos.get(Constants.PERCURSOS) != null) {
 
+            }
+            if(mapMotos.get(Constants.ALERTAS) != null){
+
+            }
+        } else {
+            //"tipoAlerta", "percentualAtual", "indicador", "avisoTroca"
+        }
         return moto;
     }
     public List<PercursoDTO> parseMapToListPercurso(Map<String, Object> mapPercursos) {
@@ -151,5 +169,15 @@ public class CodeUtils {
         alerta.setQtdeKmRodado(Long.valueOf(mapAlerta.get(Constants.KM_RODADOS).toString()));
 
         return alerta;
+    }
+    public void launchWaze(Context context, String city){
+        try {
+            String url = "waze://?q="+city+"";
+            Intent intent = new Intent( Intent.ACTION_VIEW, Uri.parse( url ) );
+            context.startActivity( intent );
+        } catch ( ActivityNotFoundException ex  ) {
+            Intent intent = new Intent( Intent.ACTION_VIEW, Uri.parse( "market://details?id=com.waze" ) );
+            context.startActivity(intent);
+        }
     }
 }

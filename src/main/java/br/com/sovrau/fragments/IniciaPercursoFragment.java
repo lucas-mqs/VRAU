@@ -71,6 +71,7 @@ public class IniciaPercursoFragment extends Fragment implements AdapterView.OnIt
     private LocationManager locManager;
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     private DatabaseReference mPercursoRef;
+    private DatabaseReference mMotoRef;
     private UsuarioDTO usuario;
     private List<MotoDTO> listMotos = new ArrayList<>();
     private MotoDTO motoEscolhida = new MotoDTO();
@@ -104,8 +105,8 @@ public class IniciaPercursoFragment extends Fragment implements AdapterView.OnIt
             if(getArguments().getSerializable(Constants.EXTRA_USUARIO_LOGADO) != null)
                 usuario = (UsuarioDTO) getArguments().getSerializable(Constants.EXTRA_USUARIO_LOGADO);
         }
-        spMotosPercurso.setOnItemSelectedListener(this);
         populateSpinner();
+        spMotosPercurso.setOnItemSelectedListener(this);
 
         btnIniciaPercurso.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,7 +205,7 @@ public class IniciaPercursoFragment extends Fragment implements AdapterView.OnIt
 
             try{
                 mPercursoRef.child(percursoID).setValue(mappedPercurso);
-                mPercursoRef.getParent().getParent().child(Constants.NODE_PERCURSO).setValue(mappedPercurso);
+                //mPercursoRef.getParent().getParent().child(Constants.NODE_PERCURSO).setValue(mappedPercurso);
             }catch (Exception e){
                 Log.e("ERR_INSERT_PERCURSO", "Erro ao inserir percurso: " + e.getMessage());
                 Toast.makeText(getContext(), "Erro ao inserir percurso:\nPor favor, tente novamente", Toast.LENGTH_SHORT).show();
@@ -227,41 +228,40 @@ public class IniciaPercursoFragment extends Fragment implements AdapterView.OnIt
 
     }
     private void populateSpinner(){
-        listMotos();
-        List<String> motoID = new ArrayList<>();
-        for (MotoDTO motoDTO: listMotos) {
-            motoID.add(motoDTO.getNmMoto());
-        }
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, motoID);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        this.spMotosPercurso.setAdapter(dataAdapter);
-
-    }
-    private void listMotos(){
-        mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario()).child(Constants.NODE_MOTO).addValueEventListener(
-            new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    /*GenericTypeIndicator<List<MotoDTO>> genericList = new GenericTypeIndicator<List<MotoDTO>>() {
-                        @Override
-                        protected Object clone() throws CloneNotSupportedException {
-                            return super.clone();
+        mMotoRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario());
+        mMotoRef.addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                            Map<String, Object> mapMotos = (Map<String, Object>) postSnapshot.getValue();
+                            listMotos.addAll(CodeUtils.getInstance().parseMapToListMoto(mapMotos));
                         }
-                    };
-                    listMotos = dataSnapshot.getValue(genericList);*/
-                    for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                        Map<String, Object> mapMotos = (Map<String, Object>) postSnapshot.getValue();
-                        Log.i(TAG, "Data: " + postSnapshot.getValue());
-                        //listMotos.add(mapMotos);
+                        List<String> motoID = new ArrayList<>();
+                        for (MotoDTO motoDTO : listMotos) {
+                            motoID.add(motoDTO.getNmMoto());
+                        }
+
+                        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, motoID);
+                        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spMotosPercurso.setAdapter(dataAdapter);
+                        if(listMotos.isEmpty()) {
+                            Toast.makeText(getContext(), "É preciso adicionar ao menos uma moto para iniciar um percurso", Toast.LENGTH_SHORT).show();
+                        } else if (listMotos.size() == 1) {
+                            spMotosPercurso.setSelection(dataAdapter.getPosition(listMotos.get(0).getNmMoto()));
+                            spMotosPercurso.setEnabled(false);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.e(TAG, "Erro ao recuperar lista de motos: " + databaseError.getMessage());
                     }
                 }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.e(TAG, "Erro ao recuperar lista de motos: " + databaseError.getMessage());
-                }
-            }
         );
+
     }
+
     private AdapterView.OnItemClickListener mOnLocationClicked = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

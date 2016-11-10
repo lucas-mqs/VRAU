@@ -75,7 +75,7 @@ public class ListaAlertaFragment extends Fragment implements AdapterView.OnItemC
                     Log.i(TAG, "Data: " + postSnapshot.getValue());
                     alertas.addAll(CodeUtils.getInstance().parseMapToListAlerta(mapAlertas));
                 }
-                AlertaArrayAdapter alertaArrayAdapter = new AlertaArrayAdapter(getActivity(), R.layout.custom_list_alert, null);
+                AlertaArrayAdapter alertaArrayAdapter = new AlertaArrayAdapter(getActivity(), R.layout.custom_list_alert, alertas);
                 listAlertas.setAdapter(alertaArrayAdapter);
                 listAlertas.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
             }

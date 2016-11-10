@@ -1,6 +1,7 @@
 package br.com.sovrau.alerta;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,7 +28,9 @@ import java.util.Map;
 
 import br.com.sovrau.R;
 import br.com.sovrau.constants.Constants;
+import br.com.sovrau.dto.MotoDTO;
 import br.com.sovrau.dto.UsuarioDTO;
+import br.com.sovrau.fragments.ListaAlertaFragment;
 import br.com.sovrau.utilities.CodeUtils;
 import br.com.sovrau.utilities.ValidationUtils;
 
@@ -50,6 +53,8 @@ public class ConfigAlertaActivity extends Activity {
     private String itemAlerta;
     private int percentualAlerta = 0;
     private String percentualPalceHolder;
+    private List<MotoDTO> listMoto = new ArrayList();
+    private MotoDTO motoEscolhida;
     private static final String TAG = ConfigAlertaActivity.class.getSimpleName();
 
     @Override
@@ -59,26 +64,9 @@ public class ConfigAlertaActivity extends Activity {
         initComponents();
         Intent intent = getIntent();
         usuarioDTO = (UsuarioDTO) intent.getSerializableExtra(Constants.EXTRA_USUARIO_LOGADO);
-        mMotoRef = mRootRef.child(Constants.NODE_USER).child(usuarioDTO.getIdUSuario());
+        mMotoRef = mRootRef.child(Constants.NODE_DATABASE).child(usuarioDTO.getIdUSuario());
 
         populateSpinner();
-
-        mMotoRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Map<String, Object> adega = (Map<String, Object>) postSnapshot.getValue();
-                    Log.i(TAG, "Data: " + postSnapshot.getValue());
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
         spItens.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -92,11 +80,27 @@ public class ConfigAlertaActivity extends Activity {
 
             }
         });
+        spMotosAlerta.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String escolha = (String) parent.getItemAtPosition(position);
+                for (int i = 0; i < listMoto.size(); i++){
+                    if(listMoto.get(i).getNmMoto().equals(escolha)){
+                        motoEscolhida = listMoto.get(i);
+                    }
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         skPercentual.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 skPercentual.setProgress(i);
-                txtPercentual.setText(percentualPalceHolder + ""+i);
+                txtPercentual.setText(percentualPalceHolder + i + "%");
                 percentualAlerta = i;
             }
 
@@ -116,14 +120,27 @@ public class ConfigAlertaActivity extends Activity {
             public void onClick(View view) {
                 if(validate()){
                     try {
-                        Map<String, Object> mappedAlerta = new HashMap();
+                        mChildRef = mMotoRef.child(Constants.NODE_MOTO).child(motoEscolhida.getIdMoto()).child(Constants.NODE_ALERTA);
+                        /*Map<String, Object> mappedAlerta = new HashMap();
                         mappedAlerta.put("id", CodeUtils.getInstance().getGenericID(""));
                         //"tipoAlerta", "percentualAtual", "indicador", "avisoTroca"
                         mappedAlerta.put("tipoAlerta", itemAlerta);
                         mappedAlerta.put("percentualAtual", 0);
-                        mappedAlerta.put("avisoTroca", percentualAlerta);
-                        mChildRef.setValue(mappedAlerta);
+                        mappedAlerta.put("avisoTroca", percentualAlerta);*/
+                        mChildRef.child(Constants.ID).setValue(CodeUtils.getInstance().getGenericID(""));
+                        mChildRef.child(Constants.TIPO_ALERTA).setValue(itemAlerta);
+                        mChildRef.child(Constants.PERCENTUAL_ATUAL).setValue(0);
+                        mChildRef.child(Constants.AVISO_TROCA).setValue(percentualAlerta);
+
+                        //mRootRef.child(Constants.NODE_DATABASE).child(Constants.NODE_USER).child(Constants.NODE_ALERTA).setValue(mappedAlerta);
                         Log.i(TAG, "Alerta cadastrado com sucesso");
+                        Class fragmentClass = ListaAlertaFragment.class;
+                        try {
+                            Fragment fragment = (Fragment) fragmentClass.newInstance();
+                            getFragmentManager().beginTransaction().replace(R.id.main_content, fragment).commit();
+                        } catch (Exception e) {
+                            Log.e(TAG, e.getMessage());
+                        }
                     } catch (Exception e){
                         Log.e(TAG, "Erro ao cadastrar alerta: " + e.getMessage());
                         Toast.makeText(getApplicationContext(), "Erro ao adicionar alerta", Toast.LENGTH_SHORT).show();
@@ -142,9 +159,8 @@ public class ConfigAlertaActivity extends Activity {
         this.skPercentual.setMax(100);
         this.percentualPalceHolder = this.txtPercentual.getText().toString();
         this.btnSalvarAlerta = (Button) findViewById(R.id.btnSalvarAlerta);
-
     }
-    private void populateSpinner(){
+    private void populateSpinner() {
         List<String> listItens = new ArrayList<>();
         listItens.add("Óleo");
         listItens.add("Pastilhas de Freio");
@@ -157,6 +173,37 @@ public class ConfigAlertaActivity extends Activity {
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         this.spItens.setPrompt("Itens");
         this.spItens.setAdapter(dataAdapter);
+
+        mMotoRef.addValueEventListener(new ValueEventListener() {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    Map<String, Object> mapMotos = (Map<String, Object>) postSnapshot.getValue();
+                    Log.i(TAG, "Data: " + postSnapshot.getValue());
+                    listMoto.addAll(CodeUtils.getInstance().parseMapToListMoto(mapMotos));
+                }
+                List<String> motoID = new ArrayList<>();
+                for (MotoDTO motoDTO : listMoto) {
+                    motoID.add(motoDTO.getNmMoto());
+                }
+
+                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(ConfigAlertaActivity.this, android.R.layout.simple_spinner_item, motoID);
+                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spMotosAlerta.setAdapter(dataAdapter);
+                if(listMoto.isEmpty()) {
+                    Toast.makeText(ConfigAlertaActivity.this, "É preciso adicionar ao menos uma moto para iniciar um percurso", Toast.LENGTH_SHORT).show();
+                    btnSalvarAlerta.setClickable(false);
+                } else if (listMoto.size() == 1) {
+                    spMotosAlerta.setSelection(dataAdapter.getPosition(listMoto.get(0).getNmMoto()));
+                    spMotosAlerta.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+        });
     }
     private boolean validate(){
         if(this.percentualAlerta == 0) {
