@@ -1,10 +1,13 @@
 package br.com.sovrau.fragments;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,9 +35,6 @@ import br.com.sovrau.dto.UsuarioDTO;
 import br.com.sovrau.utilities.CodeUtils;
 import br.com.sovrau.veiculo.VeiculoActivity;
 
-/**
- * Created by Lucas on 13/09/2016.
- */
 public class ListaVeiculosFragment extends Fragment  {
     private final static String TAG = ListaVeiculosFragment.class.getSimpleName();
 
@@ -42,8 +42,6 @@ public class ListaVeiculosFragment extends Fragment  {
     private TextView lblBoasVindas;
     private ListView listMoto;
     private FloatingActionButton fab;
-    private long motoSelecionada;
-    private String motoUrl;
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     private DatabaseReference mChildRef;
     private List<MotoDTO> motos = new ArrayList<>();
@@ -88,6 +86,13 @@ public class ListaVeiculosFragment extends Fragment  {
                         editarMoto(parent, view, position, id);
                     }
                 });
+                listMoto.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                        excluirMoto(parent, view, position, id);
+                        return true;
+                    }
+                });
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -116,5 +121,27 @@ public class ListaVeiculosFragment extends Fragment  {
         intentMotoEditar.putExtra(Constants.EXTRA_MOTO_EDITAR, motoEscolhida);
         intentMotoEditar.putExtra(Constants.EXTRA_USUARIO_LOGADO, usuario);
         startActivity(intentMotoEditar);
+    }
+    private void excluirMoto(final AdapterView<?> parent, View view, int position, long id) {
+        final MotoDTO motoEscolhida = motos.get(position);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("Tem certeza que deseja excluir a moto?")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        try {
+                            mChildRef.child(Constants.NODE_MOTO).child(motoEscolhida.getIdMoto()).removeValue();
+                            Log.i(TAG, "Moto " + motoEscolhida.getNmMoto() + " excluida");
+                            Toast.makeText(parent.getContext(), "Moto excluída", Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            Log.e(TAG, "Erro ao excluir moto: " + e.getMessage());
+                            Toast.makeText(parent.getContext(), "Erro ao excluir moto", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+        builder.create();
     }
 }

@@ -1,7 +1,6 @@
 package br.com.sovrau.percurso;
 
 import android.Manifest;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -10,7 +9,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -27,7 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import br.com.sovrau.R;
 import br.com.sovrau.constants.Constants;
@@ -36,9 +33,6 @@ import br.com.sovrau.dto.PercursoDTO;
 import br.com.sovrau.dto.UsuarioDTO;
 import br.com.sovrau.utilities.CodeUtils;
 
-/**
- * Created by Lucas on 20/09/2016.
- */
 public class GPSLocationService extends Service {
     private final static String TAG = GPSLocationService.class.getSimpleName();
     private LocationManager mLocationManager = null;
@@ -50,7 +44,7 @@ public class GPSLocationService extends Service {
     private Location locationInicial;
     private Location locationFinal;
 
-    private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();;
+    private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     private DatabaseReference mPercursoRef;
 
     private UsuarioDTO usuario;
@@ -138,10 +132,10 @@ public class GPSLocationService extends Service {
         Log.e(TAG, "onDestroy");
         super.onDestroy();
         if (mLocationManager != null) {
-            for (int i = 0; i < mLocationListeners.length; i++) {
+            for (LocationListener mLocationListener : mLocationListeners) {
                 try {
-                    if(ContextCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-                        mLocationManager.removeUpdates(mLocationListeners[i]);
+                    if (ContextCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+                        mLocationManager.removeUpdates(mLocationListener);
                 } catch (Exception ex) {
                     Log.i(TAG, "fail to remove location listeners, ignore", ex);
                 }

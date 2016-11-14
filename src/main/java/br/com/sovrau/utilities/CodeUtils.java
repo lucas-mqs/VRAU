@@ -1,12 +1,17 @@
 package br.com.sovrau.utilities;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import java.text.ParseException;
@@ -18,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import br.com.sovrau.R;
 import br.com.sovrau.constants.Constants;
 import br.com.sovrau.dto.AlertaDTO;
 import br.com.sovrau.dto.MotoDTO;
@@ -68,8 +74,7 @@ public class CodeUtils {
     }
     public String getSP(Context context, String key ){
         SharedPreferences sp = context.getSharedPreferences(PREF, Context.MODE_PRIVATE);
-        String token = sp.getString(key, "");
-        return( token );
+        return sp.getString(key, "");
     }
     public double getDistance(double lat1, double lon1, double lat2, double lon2) {
         double latA = Math.toRadians(lat1);
@@ -79,8 +84,7 @@ public class CodeUtils {
         double cosAng = (Math.cos(latA) * Math.cos(latB) * Math.cos(lonB-lonA)) +
                 (Math.sin(latA) * Math.sin(latB));
         double ang = Math.acos(cosAng);
-        double dist = ang *6371;
-        return dist;
+        return ang *6371;
     }
     public String getTimeFormatted(long millis){
         return String.format("%02d min, %02d sec",
@@ -122,10 +126,10 @@ public class CodeUtils {
             //moto.setMonitorarPastilhas(mapMotos.get(Constants.MONITORAR_PASTILHAS).toString());
             moto.setPlaca(mapMotos.get(Constants.PLACA).toString());
             if(mapMotos.get(Constants.PERCURSOS) != null) {
-
+                moto.setListPercurso(parseMapToListPercurso((HashMap)mapMotos.get(Constants.PERCURSOS)));
             }
             if(mapMotos.get(Constants.ALERTAS) != null){
-
+                moto.setListAlerta(parseMapToListAlerta((HashMap)mapMotos.get(Constants.ALERTAS)));
             }
         } else {
             //"tipoAlerta", "percentualAtual", "indicador", "avisoTroca"
@@ -180,4 +184,5 @@ public class CodeUtils {
             context.startActivity(intent);
         }
     }
+
 }

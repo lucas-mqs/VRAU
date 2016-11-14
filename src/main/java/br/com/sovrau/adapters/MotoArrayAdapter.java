@@ -2,7 +2,6 @@ package br.com.sovrau.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -16,10 +15,6 @@ import java.util.List;
 
 import br.com.sovrau.R;
 import br.com.sovrau.dto.MotoDTO;
-
-/**
- * Created by Lucas on 07/11/2016.
- */
 
 public class MotoArrayAdapter extends ArrayAdapter<MotoDTO> {
     private Activity activity;
