@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Dias"
+            android:textSize="24sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <biz.kasual.materialnumberpicker.MaterialNumberPicker
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:npMinValue="1"
+            app:npMaxValue="31"
+            app:npDefaultValue="1"
+            app:npBackgroundColor="@color/white"
+            app:npSeparatorColor="@color/colorPrimaryDark"
+            app:npTextSize="25sp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/npDias"/>
+    </LinearLayout>
+
+</LinearLayout>

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
@@ -60,6 +61,7 @@ public class PercursoManualFragment extends Fragment {
     private RadioButton tipoPercurso;
     private AutoCompleteTextView txtInicioPercurso;
     private AutoCompleteTextView txtFinalPercurso;
+    private EditText txtPeriodoDias;
     private EditText txtOdometroInicial;
     private EditText txtOdometroFinal;
     private EditText txtObs;
@@ -75,6 +77,7 @@ public class PercursoManualFragment extends Fragment {
     private static final String DIRECTIONS_URL_BASE = "https://maps.googleapis.com/maps/api/distancematrix/json?";
     private static final String DISTANCE_MATRIX_KEY = "AIzaSyAgNkFq-etPp7OZ3GqNqwfU5nb_08EgdAo";
     private GooglePlacesAutocompleteAdapter mAdapter;
+    private static final int REQUEST_CODE = 101;
 
     public static PercursoManualFragment newInstance() {
         return new PercursoManualFragment();
@@ -137,12 +140,32 @@ public class PercursoManualFragment extends Fragment {
         txtFinalPercurso.setAdapter(mAdapter);
         txtFinalPercurso.setOnItemClickListener(mOnLocationSelected);
 
+        this.txtPeriodoDias = (EditText) view.findViewById(R.id.txtPeriodoDias);
+
+        txtPeriodoDias.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment newFragment = NumberPickerFragment.newInstance();
+                newFragment.setTargetFragment(PercursoManualFragment.this, REQUEST_CODE);
+                newFragment.show(getActivity().getSupportFragmentManager(), null);
+            }
+        });
+
         this.txtOdometroInicial = (EditText) view.findViewById(R.id.txtOdometroInicial);
         this.txtOdometroFinal = (EditText) view.findViewById(R.id.txtOdometroFinal);
         this.txtObs = (EditText) view.findViewById(R.id.txtMotivo);
         this.btnIniciaPercurso = (AppCompatButton) view.findViewById(R.id.btnIniciar);
         this.spMotosPercurso = (Spinner) view.findViewById(R.id.spListaMotosPercurso);
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE) {
+            String periodo = data.getSerializableExtra(Constants.EXTRA_PERIODO).toString();
+            txtPeriodoDias.setText(periodo);
+        }
+    }
+
     //TODO: Deixar Inicio e Fim do Percurso Opcionais
     private boolean validate(String txtInicioPercurso, String txtFinalPercurso, String txtOdometroInicial, String motoEscolhida) {
         boolean isValid = true;

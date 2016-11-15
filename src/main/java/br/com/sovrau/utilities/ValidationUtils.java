@@ -2,7 +2,6 @@ package br.com.sovrau.utilities;
 
 import android.util.Patterns;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
