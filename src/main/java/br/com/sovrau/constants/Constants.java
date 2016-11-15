@@ -4,8 +4,6 @@ package br.com.sovrau.constants;
  * Created by Lucas on 12/05/2016.
  */
 public class Constants {
-    public static final String DISTANCE_MATRIX_KEY = "AIzaSyAgNkFq-etPp7OZ3GqNqwfU5nb_08EgdAo";
-
     public static final String FIREBASE_URL = "https://sovrau.firebaseio.com/";
     public static final String NODE_DATABASE = "database";
     public static final String NODE_MOTO = "moto";
