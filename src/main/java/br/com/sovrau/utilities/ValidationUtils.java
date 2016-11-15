@@ -2,6 +2,9 @@ package br.com.sovrau.utilities;
 
 import android.util.Patterns;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by Lucas on 26/04/2016.
  */
@@ -25,5 +28,12 @@ public class ValidationUtils {
     }
     public boolean isValidEmail(String email){
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+    public boolean isValidPlaca(String placa) {
+        if (placa.replace("-", "").length() != 7)
+            return false;
+        Pattern pattern = Pattern.compile("^[A-Z]{3}\\d{4}$");
+        return pattern.matcher(placa).matches();
+
     }
 }
