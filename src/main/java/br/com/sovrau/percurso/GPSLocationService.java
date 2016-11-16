@@ -173,8 +173,8 @@ public class GPSLocationService extends Service {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("Notifications Example")
-                        .setContentText("This is a test notification");
+                        .setContentTitle("VRAU está rodando!!!")
+                        .setContentText("Estamos calculando seu percurso");
 
         Intent notificationIntent = new Intent(this, MonitorAvisoActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,

@@ -174,15 +174,4 @@ public class CodeUtils {
 
         return alerta;
     }
-    public void launchWaze(Context context, String city){
-        try {
-            String url = "waze://?q="+city+"";
-            Intent intent = new Intent( Intent.ACTION_VIEW, Uri.parse( url ) );
-            context.startActivity( intent );
-        } catch ( ActivityNotFoundException ex  ) {
-            Intent intent = new Intent( Intent.ACTION_VIEW, Uri.parse( "market://details?id=com.waze" ) );
-            context.startActivity(intent);
-        }
-    }
-
 }

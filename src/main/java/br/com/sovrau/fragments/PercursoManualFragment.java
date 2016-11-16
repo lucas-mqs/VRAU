@@ -1,10 +1,8 @@
 package br.com.sovrau.fragments;
 
 import android.content.Intent;
-
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
@@ -12,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -26,7 +23,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
@@ -39,7 +35,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,14 +49,15 @@ import br.com.sovrau.utilities.CodeUtils;
 import br.com.sovrau.utilities.ValidationUtils;
 
 /**
- * Created by Lucas on 11/09/2016.
+ * Created by Lucas on 15/11/2016.
  */
+
 public class PercursoManualFragment extends Fragment {
+
     private RadioGroup rdTipoPercurso;
     private RadioButton tipoPercurso;
     private AutoCompleteTextView txtInicioPercurso;
     private AutoCompleteTextView txtFinalPercurso;
-    private EditText txtPeriodoDias;
     private EditText txtOdometroInicial;
     private EditText txtOdometroFinal;
     private EditText txtObs;
@@ -74,10 +70,7 @@ public class PercursoManualFragment extends Fragment {
     private MotoDTO motoEscolhida = new MotoDTO();
     private UsuarioDTO usuario;
     private static final String TAG = PercursoManualFragment.class.getSimpleName();
-    private static final String DIRECTIONS_URL_BASE = "https://maps.googleapis.com/maps/api/distancematrix/json?";
-    private static final String DISTANCE_MATRIX_KEY = "AIzaSyAgNkFq-etPp7OZ3GqNqwfU5nb_08EgdAo";
     private GooglePlacesAutocompleteAdapter mAdapter;
-    private static final int REQUEST_CODE = 101;
 
     public static PercursoManualFragment newInstance() {
         return new PercursoManualFragment();
@@ -100,9 +93,9 @@ public class PercursoManualFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String escolha = (String) parent.getItemAtPosition(position);
                 for (int i = 0; i < listMotos.size(); i++){
-                     if(listMotos.get(i).getNmMoto().equals(escolha)){
-                       motoEscolhida = listMotos.get(i);
-                   }
+                    if(listMotos.get(i).getNmMoto().equals(escolha)){
+                        motoEscolhida = listMotos.get(i);
+                    }
                 }
             }
             @Override
@@ -140,30 +133,10 @@ public class PercursoManualFragment extends Fragment {
         txtFinalPercurso.setAdapter(mAdapter);
         txtFinalPercurso.setOnItemClickListener(mOnLocationSelected);
 
-        this.txtPeriodoDias = (EditText) view.findViewById(R.id.txtPeriodoDias);
-
-        txtPeriodoDias.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogFragment newFragment = NumberPickerFragment.newInstance();
-                newFragment.setTargetFragment(PercursoManualFragment.this, REQUEST_CODE);
-                newFragment.show(getActivity().getSupportFragmentManager(), null);
-            }
-        });
-
         this.txtOdometroInicial = (EditText) view.findViewById(R.id.txtOdometroInicial);
-        this.txtOdometroFinal = (EditText) view.findViewById(R.id.txtOdometroFinal);
         this.txtObs = (EditText) view.findViewById(R.id.txtMotivo);
         this.btnIniciaPercurso = (AppCompatButton) view.findViewById(R.id.btnIniciar);
         this.spMotosPercurso = (Spinner) view.findViewById(R.id.spListaMotosPercurso);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE) {
-            String periodo = data.getSerializableExtra(Constants.EXTRA_PERIODO).toString();
-            txtPeriodoDias.setText(periodo);
-        }
     }
 
     //TODO: Deixar Inicio e Fim do Percurso Opcionais
@@ -201,13 +174,6 @@ public class PercursoManualFragment extends Fragment {
             Toast.makeText(getActivity().getApplicationContext(), "Por favor, preencha os campos corretamente", Toast.LENGTH_LONG).show();
             return;
         } else {
-            try {
-                JSONObject jsonObjectDistance = getDirectionsJSON(txtInicioPercurso, txtFinalPercurso);
-                double distancia = getDistanceByJSON(jsonObjectDistance);
-
-            } catch (JSONException e) {
-                Log.e(TAG, e.getMessage());
-            }
             //TODO: Refatorar codigo abaixo
             String percursoID = CodeUtils.getInstance().getGenericID("Percurso");
             Map<String, Object> mappedPercurso = new HashMap<>();
@@ -235,32 +201,33 @@ public class PercursoManualFragment extends Fragment {
 
     private void populateSpinner() {
         mMotoRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario());
-        mMotoRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    Map<String, Object> mapMotos = (Map<String, Object>) postSnapshot.getValue();
-                    listMotos.addAll(CodeUtils.getInstance().parseMapToListMoto(mapMotos));
+        mMotoRef.addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                            Map<String, Object> mapMotos = (Map<String, Object>) postSnapshot.getValue();
+                            listMotos.addAll(CodeUtils.getInstance().parseMapToListMoto(mapMotos));
+                        }
+                        List<String> motoID = new ArrayList<>();
+                        for (MotoDTO motoDTO : listMotos) {
+                            motoID.add(motoDTO.getNmMoto());
+                        }
+                        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, motoID);
+                        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spMotosPercurso.setAdapter(dataAdapter);
+                        if(listMotos.isEmpty()) {
+                            Toast.makeText(getContext(), "É preciso adicionar ao menos uma moto para iniciar um percurso", Toast.LENGTH_SHORT).show();
+                        } else if (listMotos.size() == 1) {
+                            spMotosPercurso.setSelection(dataAdapter.getPosition(listMotos.get(0).getNmMoto()));
+                            spMotosPercurso.setEnabled(false);
+                        }
                     }
-                    List<String> motoID = new ArrayList<>();
-                    for (MotoDTO motoDTO : listMotos) {
-                        motoID.add(motoDTO.getNmMoto());
-                    }
-                    ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, motoID);
-                    dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spMotosPercurso.setAdapter(dataAdapter);
-                    if(listMotos.isEmpty()) {
-                        Toast.makeText(getContext(), "É preciso adicionar ao menos uma moto para iniciar um percurso", Toast.LENGTH_SHORT).show();
-                    } else if (listMotos.size() == 1) {
-                        spMotosPercurso.setSelection(dataAdapter.getPosition(listMotos.get(0).getNmMoto()));
-                        spMotosPercurso.setEnabled(false);
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.e(TAG, "Erro ao recuperar lista de motos: " + databaseError.getMessage());
                     }
                 }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                   Log.e(TAG, "Erro ao recuperar lista de motos: " + databaseError.getMessage());
-                 }
-            }
         );
     }
     private AdapterView.OnItemClickListener mOnLocationSelected = new AdapterView.OnItemClickListener() {
@@ -271,46 +238,4 @@ public class PercursoManualFragment extends Fragment {
             Log.i(TAG, "Item selecionado: " + str);
         }
     };
-
-    private JSONObject getDirectionsJSON(String origem, String destino) throws JSONException {
-        StringBuilder buildUrl = new StringBuilder();
-        HttpURLConnection conn = null;
-        StringBuilder jsonResults = new StringBuilder();
-        try {
-            buildUrl.append(DIRECTIONS_URL_BASE)
-                    .append("origins=" + URLEncoder.encode(origem, "utf8"))
-                    .append("&destinations=" + URLEncoder.encode(destino, "utf8"))
-                    .append("&language=pt-BR")
-                    .append("&key=" + DISTANCE_MATRIX_KEY);
-            Log.i(TAG, "URL Distance Request: " + buildUrl.toString());
-
-            URL url = new URL(buildUrl.toString());
-            conn = (HttpURLConnection) url.openConnection();
-            InputStreamReader in = new InputStreamReader(conn.getInputStream());
-            int read;
-            char[] buff = new char[1024];
-            while ((read = in.read(buff)) != -1) {
-                jsonResults.append(buff, 0, read);
-            }
-        } catch (MalformedURLException e) {
-            Log.e(TAG, "URL Malformada: " + e.getMessage());
-        } catch (IOException e) {
-            Log.e(TAG, "Erro ao abrir conexão: " + e.getMessage());
-        } finally {
-            if (conn != null) {
-                conn.disconnect();
-            }
-        }
-        return new JSONObject(jsonResults.toString());
-    }
-    private double getDistanceByJSON(JSONObject jsonObjectDistance) throws JSONException {
-        JSONArray array = jsonObjectDistance.getJSONArray("routes");
-        JSONObject routes = array.getJSONObject(0);
-        JSONArray legs = routes.getJSONArray("legs");
-        JSONObject steps = legs.getJSONObject(0);
-        JSONObject distance = steps.getJSONObject("distance");
-
-        Log.i("Distancia: ", distance.toString());
-        return Double.parseDouble(distance.getString("text").replaceAll("[^\\.0123456789]","") );
-    }
 }
