@@ -1,5 +1,6 @@
 package br.com.sovrau.fragments;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.os.AsyncTask;
@@ -8,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -194,7 +196,6 @@ public class PercursoSimuladoFragment extends Fragment {
                 JSONObject jsonObjectDistance = getDirectionsJSON(txtInicioPercurso, txtFinalPercurso);
                 double distancia = getDistanceByJSON(jsonObjectDistance) * Double.parseDouble(txtPeriodoDias.getText().toString().trim());
                 Log.i(TAG, "Distancia Total: " + distancia);
-                Snackbar.make(view, "Diatancia Total: " + distancia + " Km", Snackbar.LENGTH_LONG).show();
                 calcularConsumo(distancia);
             } catch (JSONException e) {
                 Log.e(TAG, e.getMessage());
@@ -209,19 +210,44 @@ public class PercursoSimuladoFragment extends Fragment {
             String line;
             String[] headers = reader.readLine().split(";");
             int positionPercurso = getTipoPercurso(headers);
+            StringBuilder snackBarText = new StringBuilder();
             while ((line = reader.readLine()) != null) {
                 String[] cols = line.split(";");
-                if(Long.valueOf(cols[1].trim()) <= motoEscolhida.getCilindradasMoto()
-                        && motoEscolhida.getCilindradasMoto() <= Long.valueOf(cols[2].trim())){
+                if(cols[0].trim().equalsIgnoreCase("gasolina")) {
+                    if (Long.valueOf(cols[1].trim()) <= motoEscolhida.getCilindradasMoto()
+                            && motoEscolhida.getCilindradasMoto() <= Long.valueOf(cols[2].trim())) {
                         double rodagem = Double.parseDouble(cols[positionPercurso].trim());
                         Log.i(TAG, "cilindradas : " + motoEscolhida.getCilindradasMoto());
                         Log.i(TAG, "Kms por litro: " + rodagem);
-                        double gastoPorKm = distancia/rodagem;
-                    Snackbar.make(getView(), "Você gastou: " + String.format( "%.2f", gastoPorKm ) + " litros", Snackbar.LENGTH_LONG).show();
+                        double gastoPorKm = distancia / rodagem;
+                        snackBarText.append("Você gastou: " + String.format("%.2f", gastoPorKm) + " litros\n");
+                    }
+                }else if(cols[0].trim().equalsIgnoreCase("oleo")) {
+                    if (Long.valueOf(cols[1].trim()) <= motoEscolhida.getCilindradasMoto()
+                            && motoEscolhida.getCilindradasMoto() <= Long.valueOf(cols[2].trim())) {
+                        double rodagem = Double.parseDouble(cols[positionPercurso].trim());
+                        Log.i(TAG, "cilindradas : " + motoEscolhida.getCilindradasMoto());
+                        Log.i(TAG, "Km total oleo: " + rodagem);
+                        double gastoOleo = motoEscolhida.getOdometro() + distancia;
+                        double kmOleo = rodagem - gastoOleo;
+                        if (kmOleo > 0) {
+                            snackBarText.append("Você ainda pode rodar: " + String.format("%.2f", kmOleo) + " Kms\n antes de trocar o óleo");
+                        } else {
+                            snackBarText.append("Seu oleo venceu à : " + String.format("%.2f", kmOleo) + " Kms atrás.\n Por favor realize a trcca");
+                        }
+                    }
                 }
             }
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+            dialog.setTitle("Atenção").setMessage(snackBarText.toString()).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            }).show();
+
         } catch (IOException e) {
-            Toast.makeText(getContext(), "Erro ao localoizar arquivo CSV", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Erro ao localizar arquivo CSV", Toast.LENGTH_SHORT).show();
         }
     }
     private int getTipoPercurso(String[] values) {
