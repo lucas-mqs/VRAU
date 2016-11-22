@@ -8,18 +8,20 @@ public class AlertaDTO implements Serializable {
     private double qtdeKmFalta;
     private double qtdeKmRodado;
     private double porcentagemAlerta;
-    private int tipoAlerta;
+    private String tipoAlerta;
+    private String idMoto;
 
     public AlertaDTO() {
     }
 
-    public AlertaDTO(String idAlerta, double porcentagemTotal, double qtdeKmFalta, double qtdeKmRodado, double porcentagemAlerta, int tipoAlerta) {
+    public AlertaDTO(String idAlerta, double porcentagemTotal, double qtdeKmFalta, double qtdeKmRodado, double porcentagemAlerta, String tipoAlerta, String idMoto) {
         this.idAlerta = idAlerta;
         this.porcentagemTotal = porcentagemTotal;
         this.qtdeKmFalta = qtdeKmFalta;
         this.qtdeKmRodado = qtdeKmRodado;
         this.porcentagemAlerta = porcentagemAlerta;
         this.tipoAlerta = tipoAlerta;
+        this.idMoto = idMoto;
     }
 
     public String getIdAlerta() {
@@ -62,12 +64,20 @@ public class AlertaDTO implements Serializable {
         this.porcentagemAlerta = porcentagemAlerta;
     }
 
-    public int getTipoAlerta() {
+    public String getTipoAlerta() {
         return tipoAlerta;
     }
 
-    public void setTipoAlerta(int tipoAlerta) {
+    public void setTipoAlerta(String tipoAlerta) {
         this.tipoAlerta = tipoAlerta;
+    }
+
+    public String getIdMoto() {
+        return idMoto;
+    }
+
+    public void setIdMoto(String idMoto) {
+        this.idMoto = idMoto;
     }
 
     @Override
@@ -81,8 +91,11 @@ public class AlertaDTO implements Serializable {
         if (Double.compare(alertaDTO.qtdeKmFalta, qtdeKmFalta) != 0) return false;
         if (Double.compare(alertaDTO.qtdeKmRodado, qtdeKmRodado) != 0) return false;
         if (Double.compare(alertaDTO.porcentagemAlerta, porcentagemAlerta) != 0) return false;
-        if (tipoAlerta != alertaDTO.tipoAlerta) return false;
-        return idAlerta != null ? idAlerta.equals(alertaDTO.idAlerta) : alertaDTO.idAlerta == null;
+        if (idAlerta != null ? !idAlerta.equals(alertaDTO.idAlerta) : alertaDTO.idAlerta != null)
+            return false;
+        if (tipoAlerta != null ? !tipoAlerta.equals(alertaDTO.tipoAlerta) : alertaDTO.tipoAlerta != null)
+            return false;
+        return idMoto != null ? idMoto.equals(alertaDTO.idMoto) : alertaDTO.idMoto == null;
 
     }
 
@@ -99,7 +112,8 @@ public class AlertaDTO implements Serializable {
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(porcentagemAlerta);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + tipoAlerta;
+        result = 31 * result + (tipoAlerta != null ? tipoAlerta.hashCode() : 0);
+        result = 31 * result + (idMoto != null ? idMoto.hashCode() : 0);
         return result;
     }
 
@@ -112,6 +126,7 @@ public class AlertaDTO implements Serializable {
                 ", qtdeKmRodado=" + qtdeKmRodado +
                 ", porcentagemAlerta=" + porcentagemAlerta +
                 ", tipoAlerta=" + tipoAlerta +
+                ", idMoto='" + idMoto + '\'' +
                 '}';
     }
 }

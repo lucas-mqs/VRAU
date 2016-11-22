@@ -1,9 +1,10 @@
 package br.com.sovrau.alerta;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,6 +29,7 @@ import java.util.Map;
 
 import br.com.sovrau.R;
 import br.com.sovrau.constants.Constants;
+import br.com.sovrau.dto.AlertaDTO;
 import br.com.sovrau.dto.MotoDTO;
 import br.com.sovrau.dto.UsuarioDTO;
 import br.com.sovrau.fragments.ListaAlertaFragment;
@@ -55,6 +57,7 @@ public class ConfigAlertaActivity extends Activity {
     private int percentualAlerta = 0;
     private String percentualPalceHolder;
     private List<MotoDTO> listMoto = new ArrayList();
+    private ArrayList<AlertaDTO> listAlertas = new ArrayList<>();
     private MotoDTO motoEscolhida;
     private static final String TAG = ConfigAlertaActivity.class.getSimpleName();
 
@@ -66,7 +69,9 @@ public class ConfigAlertaActivity extends Activity {
         final Intent intent = getIntent();
         usuarioDTO = (UsuarioDTO) intent.getSerializableExtra(Constants.EXTRA_USUARIO_LOGADO);
         mMotoRef = mRootRef.child(Constants.NODE_DATABASE).child(usuarioDTO.getIdUSuario());
-
+        if(intent.hasExtra(Constants.EXTRA_ALERTA_ADICIONADO)){
+            listAlertas = (ArrayList<AlertaDTO>) intent.getSerializableExtra(Constants.EXTRA_ALERTA_ADICIONADO);
+        }
         populateSpinner();
 
         spItens.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -123,15 +128,27 @@ public class ConfigAlertaActivity extends Activity {
                     try {
                         String genericAlertaID = CodeUtils.getInstance().getGenericID(itemAlerta);
                         Map<String, Object> mappedAlerta = new HashMap();
-                        mappedAlerta.put("tipoAlerta", itemAlerta);
-                        mappedAlerta.put("percentualAtual", 0);
-                        mappedAlerta.put("avisoTroca", percentualAlerta);
+                        mappedAlerta.put(Constants.ID, genericAlertaID);
+                        mappedAlerta.put(Constants.TIPO_ALERTA, itemAlerta);
+                        mappedAlerta.put(Constants.PERCENTUAL_ATUAL, 0);
+                        mappedAlerta.put(Constants.AVISO_TROCA, percentualAlerta);
+                        mappedAlerta.put(Constants.ATIVO, true);
+                        mappedAlerta.put(Constants.KM_RODADOS, motoEscolhida.getOdometro());
+                        mappedAlerta.put(Constants.KM_FALTANTES, 10000);
+                        mappedAlerta.put(Constants.NODE_MOTO, motoEscolhida.getIdMoto());
+
                         mMotoRef.child(Constants.NODE_ALERTA).child(genericAlertaID).setValue(mappedAlerta);
 
                         mChildRef = mMotoRef.child(Constants.NODE_MOTO).child(motoEscolhida.getIdMoto()).child(Constants.NODE_ALERTA).child(genericAlertaID);
                         mChildRef.child(Constants.TIPO_ALERTA).setValue(itemAlerta);
                         mChildRef.child(Constants.PERCENTUAL_ATUAL).setValue(0);
                         mChildRef.child(Constants.AVISO_TROCA).setValue(percentualAlerta);
+                        mChildRef.child(Constants.ID).setValue(genericAlertaID);
+                        mChildRef.child(Constants.ATIVO).setValue(true);
+                        mChildRef.child(Constants.KM_RODADOS).setValue(motoEscolhida.getOdometro());
+                        //TODO: criar metodo para retornar maximo de KM por item de acordo com a moto
+                        mChildRef.child(Constants.KM_FALTANTES).setValue(100000);
+                        mChildRef.child(Constants.NODE_MOTO).setValue(motoEscolhida.getIdMoto());
 
                         Log.i(TAG, "Alerta cadastrado com sucesso");
                         try {
@@ -198,7 +215,6 @@ public class ConfigAlertaActivity extends Activity {
                     spMotosAlerta.setEnabled(false);
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
@@ -213,6 +229,20 @@ public class ConfigAlertaActivity extends Activity {
         } else if(ValidationUtils.getInstance().isNullOrEmpty(this.itemAlerta)) {
             Toast.makeText(this, "Por favor selecione um item que deseja ser alertado sobre o desgaste", Toast.LENGTH_LONG).show();
             return false;
+        }
+        for (AlertaDTO alerta : listAlertas) {
+            if(alerta.getIdMoto().equals(motoEscolhida.getIdMoto())
+                    && alerta.getTipoAlerta().equalsIgnoreCase(this.itemAlerta)){
+                //Usuário já possui um alerta de um determinado item para sua moto.
+                //Não é preciso criar outro.
+                AlertDialog.Builder dialog = new AlertDialog.Builder(getApplicationContext());
+                dialog.setTitle("Atenção").setMessage("Você já possui um alerta cadastrado para este item nesta moto.").setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }).show();
+                return false;
+            }
         }
         return true;
     }

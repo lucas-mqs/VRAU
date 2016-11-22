@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -86,6 +87,7 @@ public class ListaAlertaFragment extends Fragment implements AdapterView.OnItemC
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), ConfigAlertaActivity.class);
                 intent.putExtra(Constants.EXTRA_USUARIO_LOGADO, usuario);
+                intent.putExtra(Constants.EXTRA_ALERTA_ADICIONADO, new ArrayList<>(alertas));
                 startActivity(intent);
             }
         });
@@ -98,5 +100,6 @@ public class ListaAlertaFragment extends Fragment implements AdapterView.OnItemC
         String percentualAtual = String.valueOf(alertaDTO.getPorcentagemTotal());
         String indicador = String.valueOf(alertaDTO.getPorcentagemAlerta());
         String avisoTroca = String.valueOf(alertaDTO.getQtdeKmFalta());
+        Log.i(TAG, MessageFormat.format("Percentual Atual: {0} - Indicador: {1} - Aviso Troca: {2}", percentualAtual, indicador, avisoTroca));
     }
 }

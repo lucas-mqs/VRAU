@@ -64,5 +64,6 @@ public class Constants {
     public static final String KM_RODADOS = "qtdeKmRodado";
     public static final String KM_FALTANTES = "qtdeKmFalta";
     public static final String ALERTAS = "alertas";
+    public static final String ATIVO = "ativo";
 
 }

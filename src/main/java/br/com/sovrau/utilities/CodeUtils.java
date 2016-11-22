@@ -170,10 +170,10 @@ public class CodeUtils {
         return listAlertas;
     }
     private AlertaDTO parseMapToAlertaDTO(Map mapAlerta) {
-        if(Boolean.parseBoolean(mapAlerta.get("ativo").toString())) {
+        if(Boolean.parseBoolean(mapAlerta.get(Constants.ATIVO).toString())) {
             AlertaDTO alerta = new AlertaDTO();
             alerta.setIdAlerta(mapAlerta.get(Constants.ID).toString());
-            alerta.setPorcentagemAlerta(Double.valueOf(mapAlerta.get(Constants.PERCENTUAL_AERTA).toString()));
+            alerta.setPorcentagemAlerta(Double.valueOf(mapAlerta.get(Constants.AVISO_TROCA).toString()));
             alerta.setPorcentagemTotal(Double.parseDouble(mapAlerta.get(Constants.PERCENTUAL_ATUAL).toString()));
             alerta.setTipoAlerta(Integer.valueOf(mapAlerta.get(Constants.TIPO_ALERTA).toString()));
             alerta.setQtdeKmFalta(Long.valueOf(mapAlerta.get(Constants.KM_FALTANTES).toString()));
