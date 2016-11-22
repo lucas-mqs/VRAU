@@ -3,17 +3,14 @@ package br.com.sovrau.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,7 +27,6 @@ import br.com.sovrau.adapters.AlertaArrayAdapter;
 import br.com.sovrau.alerta.ConfigAlertaActivity;
 import br.com.sovrau.constants.Constants;
 import br.com.sovrau.dto.AlertaDTO;
-import br.com.sovrau.dto.MotoDTO;
 import br.com.sovrau.dto.UsuarioDTO;
 import br.com.sovrau.utilities.CodeUtils;
 
@@ -65,7 +61,7 @@ public class ListaAlertaFragment extends Fragment implements AdapterView.OnItemC
 
         Intent intent = getActivity().getIntent();
         usuario = (UsuarioDTO) intent.getSerializableExtra(Constants.EXTRA_USUARIO_LOGADO);
-        mChildRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario()).child(Constants.NODE_MOTO).child(Constants.NODE_ALERTA);
+        mChildRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario()).child(Constants.NODE_ALERTA);
 
         mChildRef.addValueEventListener(new ValueEventListener() {
             @Override

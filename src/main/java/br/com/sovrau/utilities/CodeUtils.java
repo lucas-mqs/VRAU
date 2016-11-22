@@ -97,7 +97,11 @@ public class CodeUtils {
         List<MotoDTO> listMotos = new ArrayList<>();
         for(Map.Entry<String, Object> entry : mapMotos.entrySet()){
             try {
-                listMotos.add(parseMapToMotoDTO((HashMap) entry.getValue()));
+                Log.i("ENTRY CODEUTILS", entry.getValue().toString());
+                MotoDTO motoDTO = parseMapToMotoDTO((HashMap) entry.getValue());
+                Log.i("CODEUTILS", entry.toString());
+                if(motoDTO != null)
+                    listMotos.add(motoDTO);
             } catch(Exception e) {
                 Log.e("CodeUtils", e.getMessage());
             }
@@ -106,6 +110,7 @@ public class CodeUtils {
     }
     private MotoDTO parseMapToMotoDTO(Map mapMotos) {
         MotoDTO moto = new MotoDTO();
+        //"tipoAlerta", "percentualAtual", "indicador", "avisoTroca"
         if(mapMotos.get(Constants.ODOMETRO) != null) {
             //moto.setMonitorarFreios(mapMotos.get(Constants.MONITORAR_FREIOS));
             moto.setOdometro(Long.valueOf(mapMotos.get(Constants.ODOMETRO).toString()));
@@ -131,10 +136,8 @@ public class CodeUtils {
             if(mapMotos.get(Constants.ALERTAS) != null){
                 moto.setListAlerta(parseMapToListAlerta((HashMap)mapMotos.get(Constants.ALERTAS)));
             }
-        } else {
-            //"tipoAlerta", "percentualAtual", "indicador", "avisoTroca"
-        }
-        return moto;
+            return moto;
+        } else return null;
     }
     public List<PercursoDTO> parseMapToListPercurso(Map<String, Object> mapPercursos) {
         List<PercursoDTO> listPercursos = new ArrayList<>();
@@ -159,19 +162,24 @@ public class CodeUtils {
     public List<AlertaDTO> parseMapToListAlerta(Map<String,Object> mapAlertas) {
         List<AlertaDTO> listAlertas = new ArrayList<>();
         for(Map.Entry<String, Object> entry : mapAlertas.entrySet()){
-            listAlertas.add(parseMapToAlertaDTO((HashMap)entry.getValue()));
+            AlertaDTO alerta = parseMapToAlertaDTO(mapAlertas);
+            if(alerta != null) {
+                listAlertas.add(parseMapToAlertaDTO(mapAlertas));
+            }
         }
         return listAlertas;
     }
     private AlertaDTO parseMapToAlertaDTO(Map mapAlerta) {
-        AlertaDTO alerta = new AlertaDTO();
-        alerta.setIdAlerta(mapAlerta.get(Constants.ID).toString());
-        alerta.setPorcentagemAlerta(Double.valueOf(mapAlerta.get(Constants.PERCENTUAL_AERTA).toString()));
-        alerta.setPorcentagemTotal(Double.parseDouble(mapAlerta.get(Constants.PERCENTUAL_ATUAL).toString()));
-        alerta.setTipoAlerta(Integer.valueOf(mapAlerta.get(Constants.TIPO_ALERTA).toString()));
-        alerta.setQtdeKmFalta(Long.valueOf(mapAlerta.get(Constants.KM_FALTANTES).toString()));
-        alerta.setQtdeKmRodado(Long.valueOf(mapAlerta.get(Constants.KM_RODADOS).toString()));
+        if(Boolean.parseBoolean(mapAlerta.get("ativo").toString())) {
+            AlertaDTO alerta = new AlertaDTO();
+            alerta.setIdAlerta(mapAlerta.get(Constants.ID).toString());
+            alerta.setPorcentagemAlerta(Double.valueOf(mapAlerta.get(Constants.PERCENTUAL_AERTA).toString()));
+            alerta.setPorcentagemTotal(Double.parseDouble(mapAlerta.get(Constants.PERCENTUAL_ATUAL).toString()));
+            alerta.setTipoAlerta(Integer.valueOf(mapAlerta.get(Constants.TIPO_ALERTA).toString()));
+            alerta.setQtdeKmFalta(Long.valueOf(mapAlerta.get(Constants.KM_FALTANTES).toString()));
+            alerta.setQtdeKmRodado(Long.valueOf(mapAlerta.get(Constants.KM_RODADOS).toString()));
 
-        return alerta;
+            return alerta;
+        } return null;
     }
 }

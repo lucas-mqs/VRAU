@@ -1,9 +1,9 @@
 package br.com.sovrau.alerta;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -31,6 +31,7 @@ import br.com.sovrau.constants.Constants;
 import br.com.sovrau.dto.MotoDTO;
 import br.com.sovrau.dto.UsuarioDTO;
 import br.com.sovrau.fragments.ListaAlertaFragment;
+import br.com.sovrau.user.UserHome;
 import br.com.sovrau.utilities.CodeUtils;
 import br.com.sovrau.utilities.ValidationUtils;
 
@@ -62,7 +63,7 @@ public class ConfigAlertaActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.config_alerta_activity);
         initComponents();
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         usuarioDTO = (UsuarioDTO) intent.getSerializableExtra(Constants.EXTRA_USUARIO_LOGADO);
         mMotoRef = mRootRef.child(Constants.NODE_DATABASE).child(usuarioDTO.getIdUSuario());
 
@@ -120,24 +121,24 @@ public class ConfigAlertaActivity extends Activity {
             public void onClick(View view) {
                 if(validate()){
                     try {
-                        mChildRef = mMotoRef.child(Constants.NODE_MOTO).child(motoEscolhida.getIdMoto()).child(Constants.NODE_ALERTA);
-                        /*Map<String, Object> mappedAlerta = new HashMap();
-                        mappedAlerta.put("id", CodeUtils.getInstance().getGenericID(""));
-                        //"tipoAlerta", "percentualAtual", "indicador", "avisoTroca"
+                        String genericAlertaID = CodeUtils.getInstance().getGenericID(itemAlerta);
+                        Map<String, Object> mappedAlerta = new HashMap();
                         mappedAlerta.put("tipoAlerta", itemAlerta);
                         mappedAlerta.put("percentualAtual", 0);
-                        mappedAlerta.put("avisoTroca", percentualAlerta);*/
-                        mChildRef.child(Constants.ID).setValue(CodeUtils.getInstance().getGenericID(""));
+                        mappedAlerta.put("avisoTroca", percentualAlerta);
+                        mMotoRef.child(Constants.NODE_ALERTA).child(genericAlertaID).setValue(mappedAlerta);
+
+                        mChildRef = mMotoRef.child(Constants.NODE_MOTO).child(motoEscolhida.getIdMoto()).child(Constants.NODE_ALERTA).child(genericAlertaID);
                         mChildRef.child(Constants.TIPO_ALERTA).setValue(itemAlerta);
                         mChildRef.child(Constants.PERCENTUAL_ATUAL).setValue(0);
                         mChildRef.child(Constants.AVISO_TROCA).setValue(percentualAlerta);
 
-                        //mRootRef.child(Constants.NODE_DATABASE).child(Constants.NODE_USER).child(Constants.NODE_ALERTA).setValue(mappedAlerta);
                         Log.i(TAG, "Alerta cadastrado com sucesso");
-                        Class fragmentClass = ListaAlertaFragment.class;
                         try {
-                            Fragment fragment = (Fragment) fragmentClass.newInstance();
-                            getFragmentManager().beginTransaction().replace(R.id.main_content, fragment).commit();
+                            Intent intentAlerta = new Intent(getApplicationContext(), UserHome.class);
+                            intentAlerta.putExtra(Constants.EXTRA_USUARIO_LOGADO, usuarioDTO);
+                            intentAlerta.putExtra(Constants.EXTRA_ALERTA_ADICIONADO, ListaAlertaFragment.class.getName());
+                            startActivity(intentAlerta);
                         } catch (Exception e) {
                             Log.e(TAG, e.getMessage());
                         }

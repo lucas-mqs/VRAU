@@ -58,7 +58,12 @@ public class UserHome extends AppCompatActivity {
 
         lblUserName.setText(localName);
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().add(R.id.main_content, ListaVeiculosFragment.newInstance(), "listaVeiculos").commit();
+            if(intent.getStringExtra(Constants.EXTRA_ALERTA_ADICIONADO) != null){
+                getSupportFragmentManager().beginTransaction().add(R.id.main_content, ListaAlertaFragment.newInstance(), "listaAlertas").commit();
+            }else {
+                getSupportFragmentManager().beginTransaction().add(R.id.main_content, ListaVeiculosFragment.newInstance(), "listaVeiculos").commit();
+            }
+
         }
         populateDrawerList();
     }
@@ -117,7 +122,8 @@ public class UserHome extends AppCompatActivity {
                 fragmentClass = ListaVeiculosFragment.class;
                 break;
             case 7: //Sair
-                fragmentClass = RevisaoManualFragment.class;
+                fragmentClass = null;
+                android.os.Process.killProcess(android.os.Process.myPid());
                 break;
             default:
                 fragmentClass = ListaVeiculosFragment.class;
