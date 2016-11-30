@@ -210,7 +210,7 @@ public class PercursoSimuladoFragment extends Fragment {
             String line;
             String[] headers = reader.readLine().split(";");
             int positionPercurso = getTipoPercurso(headers);
-            StringBuilder snackBarText = new StringBuilder();
+            StringBuilder sbConsumo = new StringBuilder();
             while ((line = reader.readLine()) != null) {
                 String[] cols = line.split(";");
                 if(cols[0].trim().equalsIgnoreCase("gasolina")) {
@@ -220,7 +220,7 @@ public class PercursoSimuladoFragment extends Fragment {
                         Log.i(TAG, "cilindradas : " + motoEscolhida.getCilindradasMoto());
                         Log.i(TAG, "Kms por litro: " + rodagem);
                         double gastoPorKm = distancia / rodagem;
-                        snackBarText.append("Você gastou: " + String.format("%.2f", gastoPorKm) + " litros\n");
+                        sbConsumo.append("Você gastou: " + String.format("%.2f", gastoPorKm) + " litros de gasolina\n");
                     }
                 }else if(cols[0].trim().equalsIgnoreCase("oleo")) {
                     if (Long.valueOf(cols[1].trim()) <= motoEscolhida.getCilindradasMoto()
@@ -231,15 +231,80 @@ public class PercursoSimuladoFragment extends Fragment {
                         double gastoOleo = motoEscolhida.getOdometro() + distancia;
                         double kmOleo = rodagem - gastoOleo;
                         if (kmOleo > 0) {
-                            snackBarText.append("Você ainda pode rodar: " + String.format("%.2f", kmOleo) + " Kms\n antes de trocar o óleo");
+                            sbConsumo.append("Você ainda pode rodar: " + String.format("%.2f", kmOleo) + " Kms antes de trocar o óleo. \n");
                         } else {
-                            snackBarText.append("Seu oleo venceu à : " + String.format("%.2f", kmOleo) + " Kms atrás.\n Por favor realize a trcca");
+                            sbConsumo.append("Seu oleo venceu à : " + String.format("%.2f", kmOleo) + " Kms atrás.\n Por favor realize a trcca");
+                        }
+                    }
+                } else if(cols[0].trim().equalsIgnoreCase("liquido de arrefecimento")) {
+                    if (Long.valueOf(cols[1].trim()) <= motoEscolhida.getCilindradasMoto()
+                            && motoEscolhida.getCilindradasMoto() <= Long.valueOf(cols[2].trim())) {
+                        double rodagem = Double.parseDouble(cols[positionPercurso].trim());
+                        Log.i(TAG, "Km total liquido de arrefecimento: " + rodagem);
+                        double gastoLiquido = motoEscolhida.getOdometro() + distancia;
+                        double kmLiquido = rodagem - gastoLiquido;
+                        if (kmLiquido > 0) {
+                            sbConsumo.append("Você ainda pode rodar: " + String.format("%.2f", kmLiquido) + " Kms antes de trocar o liquido de arrefecimento. \n");
+                        } else {
+                            sbConsumo.append("Seu liquido de arrefecimento venceu à : " + String.format("%.2f", kmLiquido) + " Kms atrás.\n Por favor realize a trcca");
+                        }
+                    }
+                } else if(cols[0].trim().equalsIgnoreCase("pastilhas")) {
+                    if (Long.valueOf(cols[1].trim()) <= motoEscolhida.getCilindradasMoto()
+                            && motoEscolhida.getCilindradasMoto() <= Long.valueOf(cols[2].trim())) {
+                        double rodagem = Double.parseDouble(cols[positionPercurso].trim());
+                        Log.i(TAG, "Km total pastilhas: " + rodagem);
+                        double gastoPastilhas = motoEscolhida.getOdometro() + distancia;
+                        double kmPastilhas = rodagem - gastoPastilhas;
+                        if (kmPastilhas > 0) {
+                            sbConsumo.append("Você ainda pode rodar: " + String.format("%.2f", kmPastilhas) + " Kms antes de trocar as pastilhas. \n");
+                        } else {
+                            sbConsumo.append("Suas pastilhas venceram à : " + String.format("%.2f", kmPastilhas) + " Kms atrás.\n Por favor realize a trcca");
+                        }
+                    }
+                } else if(cols[0].trim().equalsIgnoreCase("caixa de direcao")) {
+                    if (Long.valueOf(cols[1].trim()) <= motoEscolhida.getCilindradasMoto()
+                            && motoEscolhida.getCilindradasMoto() <= Long.valueOf(cols[2].trim())) {
+                        double rodagem = Double.parseDouble(cols[positionPercurso].trim());
+                        Log.i(TAG, "Km total caixa de direção: " + rodagem);
+                        double gastoCaixa = motoEscolhida.getOdometro() + distancia;
+                        double kmCaixa = rodagem - gastoCaixa;
+                        if (kmCaixa > 0) {
+                            sbConsumo.append("Você ainda pode rodar: " + String.format("%.2f", kmCaixa) + " Kms antes de trocar a caixa de direção. \n");
+                        } else {
+                            sbConsumo.append("Sua caixa de direção deveria ser trocada à : " + String.format("%.2f", kmCaixa) + " Kms atrás.\n Por favor realize a trcca");
+                        }
+                    }
+                } else if(cols[0].trim().equalsIgnoreCase("pneus")) {
+                    if (Long.valueOf(cols[1].trim()) <= motoEscolhida.getCilindradasMoto()
+                            && motoEscolhida.getCilindradasMoto() <= Long.valueOf(cols[2].trim())) {
+                        double rodagem = Double.parseDouble(cols[positionPercurso].trim());
+                        Log.i(TAG, "Km total pneus: " + rodagem);
+                        double gastoPneus = motoEscolhida.getOdometro() + distancia;
+                        double kmPneus = rodagem - gastoPneus;
+                        if (kmPneus > 0) {
+                            sbConsumo.append("Você ainda pode rodar: " + String.format("%.2f", kmPneus) + " Kms antes de trocar os pneus. \n");
+                        } else {
+                            sbConsumo.append("Seus pneus deveriam ser trocados à : " + String.format("%.2f", kmPneus) + " Kms atrás.\n Por favor realize a trcca");
+                        }
+                    }
+                } else if(cols[0].trim().equalsIgnoreCase("freio")) {
+                    if (Long.valueOf(cols[1].trim()) <= motoEscolhida.getCilindradasMoto()
+                            && motoEscolhida.getCilindradasMoto() <= Long.valueOf(cols[2].trim())) {
+                        double rodagem = Double.parseDouble(cols[positionPercurso].trim());
+                        Log.i(TAG, "Km total freio: " + rodagem);
+                        double gastoFreio = motoEscolhida.getOdometro() + distancia;
+                        double kmFreio = rodagem - gastoFreio;
+                        if (kmFreio > 0) {
+                            sbConsumo.append("Você ainda pode rodar: " + String.format("%.2f", kmFreio) + " Kms antes de revisar os freios. \n");
+                        } else {
+                            sbConsumo.append("Seus freios deviam ser revisados à : " + String.format("%.2f", kmFreio) + " Kms atrás.\n Por favor realize a trcca");
                         }
                     }
                 }
             }
             AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
-            dialog.setTitle("Atenção").setMessage(snackBarText.toString()).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            dialog.setTitle("Atenção").setMessage(sbConsumo.toString()).setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 

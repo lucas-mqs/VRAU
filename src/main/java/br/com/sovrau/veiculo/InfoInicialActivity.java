@@ -38,6 +38,7 @@ import br.com.sovrau.utilities.ValidationUtils;
 public class InfoInicialActivity extends Activity {
     private EditText txtOdometroInicial;
     private EditText dataUltimaRevisao;
+    private EditText txtOdometroUltimaRevisao;
     private CheckBox chCombustivel;
     private CheckBox chOleo;
     private CheckBox chDesgastePastilhas;
@@ -99,6 +100,7 @@ public class InfoInicialActivity extends Activity {
 
     private void initComponents() {
         this.txtOdometroInicial = (EditText) findViewById(R.id.txtOdometro);
+        this.txtOdometroUltimaRevisao = (EditText) findViewById(R.id.txtOdometroRevisao);
         this.dataUltimaRevisao = (EditText) findViewById(R.id.dataUltimaRevisao);
         this.chCombustivel = (CheckBox) findViewById(R.id.chCombustivel);
         this.chOleo = (CheckBox) findViewById(R.id.chOleo);
@@ -114,6 +116,7 @@ public class InfoInicialActivity extends Activity {
     public void insertInfoInicial() throws ParseException {
         String odometro = this.txtOdometroInicial.getText().toString();
         String dataRevisao = this.strDataRevisao;
+        String odometroRevisao = this.txtOdometroUltimaRevisao.getText().toString();
 
         boolean isMonitorarCombustivel = this.chCombustivel.isChecked();
         boolean isMonitorarOleo = this.chOleo.isChecked();
@@ -125,7 +128,7 @@ public class InfoInicialActivity extends Activity {
         int localCelular = this.radioGroupLocalCelular.getCheckedRadioButtonId();
         this.radioBtnLocalCelular = (RadioButton) findViewById(localCelular);
 
-        if (!validate(odometro, dataRevisao, isMonitorarCombustivel, isMonitorarOleo, isMonitorarPastilhas, isMonitorarPneus, isMonitorarLiquido, isMonitorarFreios, isMonitorarCxDirecao)) {
+        if (!validate(odometro, dataRevisao, odometroRevisao, isMonitorarCombustivel, isMonitorarOleo, isMonitorarPastilhas, isMonitorarPneus, isMonitorarLiquido, isMonitorarFreios, isMonitorarCxDirecao)) {
             Toast.makeText(getBaseContext(), "Por favor, preencha os campos corretamente", Toast.LENGTH_LONG).show();
             return;
         } else {
@@ -140,6 +143,7 @@ public class InfoInicialActivity extends Activity {
             mappedInfos.put("placa", motoInicialDTO.getPlaca());
             mappedInfos.put("obs", motoInicialDTO.getObs().length() > 100 ? motoInicialDTO.getObs().substring(0, 99) : motoInicialDTO.getObs());
             mappedInfos.put("odometro", odometro);
+            mappedInfos.put("odometroUltimaRevisao", odometroRevisao);
             mappedInfos.put("dataRevisao", dataRevisao);
             mappedInfos.put("isMonitorarCombustivel", isMonitorarCombustivel);
             mappedInfos.put("isMonitorarOleo", isMonitorarOleo);
@@ -154,7 +158,7 @@ public class InfoInicialActivity extends Activity {
         }
     }
 
-    public boolean validate(String odometro, String dataRevisao, boolean isMonitorarCombustivel, boolean isMonitorarOleo, boolean isMonitorarPastilhas, boolean isMonitorarPneus,
+    public boolean validate(String odometro, String dataRevisao, String odometroRevisao,  boolean isMonitorarCombustivel, boolean isMonitorarOleo, boolean isMonitorarPastilhas, boolean isMonitorarPneus,
                             boolean isMonitorarLiquido, boolean isMonitorarFreios, boolean isMonitorarCxDirecao) {
         boolean isValid = true;
         if (!isMonitorarCombustivel && !isMonitorarOleo && !isMonitorarPastilhas && !isMonitorarPneus &&
@@ -162,7 +166,7 @@ public class InfoInicialActivity extends Activity {
             Toast.makeText(this, "Selecione ao menos um item para monitorar", Toast.LENGTH_SHORT).show();
             isValid = false;
         }
-        if (ValidationUtils.getInstance().isNullOrEmpty(odometro)) {
+        if (ValidationUtils.getInstance().isNullOrEmpty(odometro) || ValidationUtils.getInstance().isNullOrEmpty(odometroRevisao)) {
             Toast.makeText(this, "Valor do Odometro Inválido", Toast.LENGTH_SHORT).show();
             isValid = false;
         } else {

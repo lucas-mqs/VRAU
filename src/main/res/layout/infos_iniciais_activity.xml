@@ -27,8 +27,8 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:inputType="number"
-            android:maxLength="8"
-            android:hint="Quilometragem" />
+            android:maxLength="12"
+            android:hint="Quilometragem Inicial" />
 
         <EditText
             android:id="@+id/dataUltimaRevisao"
@@ -39,6 +39,17 @@
             android:layout_marginRight="10dp"
             android:focusable="false"
             android:hint="Data da Última Revisão"/>
+
+        <EditText
+            android:id="@+id/txtOdometroRevisao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:inputType="number"
+            android:maxLength="12"
+            android:hint="Quilometragem na Última Revisão" />
 
         <TextView
             android:id="@+id/textView4"

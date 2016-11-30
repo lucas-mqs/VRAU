@@ -80,6 +80,7 @@ public class AlertaArrayAdapter extends ArrayAdapter {
                 holder = (ViewHolder) vi.getTag();
             }
             holder.txtIndicadorPercentual.setText(new Double(lAlertas.get(position).getPorcentagemTotal()).intValue());
+            holder.txtIndicadorPercentual.setText(String.valueOf(lAlertas.get(position).getPorcentagemTotal()));
             holder.txtAvisoTroca.setText(String.valueOf(lAlertas.get(position).getQtdeKmFalta()));
             holder.txtQuilometragemRodada.setText(String.valueOf(lAlertas.get(position).getQtdeKmRodado()));
             holder.txtTipoAlerta.setText(lAlertas.get(position).getTipoAlerta());

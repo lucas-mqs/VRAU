@@ -62,7 +62,7 @@ public class ListaAlertaFragment extends Fragment implements AdapterView.OnItemC
 
         Intent intent = getActivity().getIntent();
         usuario = (UsuarioDTO) intent.getSerializableExtra(Constants.EXTRA_USUARIO_LOGADO);
-        mChildRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario()).child(Constants.NODE_ALERTA);
+        mChildRef = mRootRef.child(Constants.NODE_DATABASE).child(usuario.getIdUSuario());
 
         mChildRef.addValueEventListener(new ValueEventListener() {
             @Override
